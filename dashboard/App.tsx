@@ -335,18 +335,18 @@ export const App: React.FC = () => {
       <aside className="panel lewy">
         <div className="logo">
           <span className="znaczek"><Clapperboard {...I} style={{ width: 13, height: 13 }} /></span>
-          Maszynka do shortsów
+          Maszynka do filmów
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <button className="btn glowny nav-btn" onClick={() => setPokazNowa(true)}>
-            <Plus {...I} /> Nowa rolka
+            <Plus {...I} /> Nowy film
           </button>
           <button className={`btn nav-btn ${widok === "galeria" ? "" : "cichy"}`} onClick={() => setWidok("galeria")}>
-            <Film {...I} /> Galeria rolek
+            <Film {...I} /> Galeria
           </button>
         </div>
         <div>
-          <p className="etykieta-sekcji">Twoje rolki</p>
+          <p className="etykieta-sekcji">Twoje filmy</p>
           <div className="lista-projektow">
             {projekty.map((p) => (
               <button key={p.id} className={`projekt ${widok === "edycja" && aktywny?.id === p.id ? "aktywny" : ""}`} onClick={() => { setWidok("edycja"); setZakladka("sceny"); void wczytaj(p.id); }}>
@@ -357,7 +357,7 @@ export const App: React.FC = () => {
                 </span>
               </button>
             ))}
-            {projekty.length === 0 && <p className="male">Nie masz jeszcze żadnej rolki. Zacznij od przycisku „Nowa rolka”.</p>}
+            {projekty.length === 0 && <p className="male">Nie masz jeszcze żadnego filmu. Zacznij od przycisku „Nowy film”.</p>}
           </div>
         </div>
         <div className="panel-lektor">
@@ -382,7 +382,7 @@ export const App: React.FC = () => {
         {widok === "galeria" ? (
           <>
             <div className="naglowek-projektu">
-              <h1>Galeria rolek</h1>
+              <h1>Galeria</h1>
               <div className="male">Wszystkie wygenerowane pliki MP4. Kliknij tytuł, żeby wrócić do edycji.</div>
             </div>
             <div className="tresc" style={{ maxWidth: "none" }}>
@@ -392,7 +392,7 @@ export const App: React.FC = () => {
         ) : !aktywny ? (
           <div className="pusty">
             <div className="ikona-duza"><Clapperboard {...I} style={{ width: 20, height: 20 }} /></div>
-            Wybierz rolkę z listy albo utwórz nową.
+            Wybierz film z listy albo utwórz nowy.
           </div>
         ) : aktywny.typ === "explainer" ? (
           <>

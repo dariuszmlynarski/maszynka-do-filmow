@@ -1,5 +1,5 @@
 #!/bin/bash
-# Uruchamia maszynkę do shortsów. Kliknij dwa razy w Finderze.
+# Uruchamia Maszynkę do filmów. Kliknij dwa razy w Finderze.
 cd "$(dirname "$0")"
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
@@ -16,7 +16,7 @@ fi
 
 echo ""
 echo "==============================================="
-echo "  Maszynka do shortsów startuje…"
+echo "  Maszynka do filmów startuje…"
 echo "  Dashboard otworzy się w przeglądarce za chwilę."
 echo "  Adres: http://localhost:5757"
 echo "  Aby zakończyć, zamknij to okno (Cmd+Q w Terminalu)."

@@ -1,7 +1,7 @@
 {
   "name": "maszynka-do-rolek",
   "version": "1.0.0",
-  "description": "Maszynka do rolek — DMProsper (fork AIBiz-Automatyzacje/maszynka-do-shortsow)",
+  "description": "Maszynka do filmów — DMProsper (fork AIBiz-Automatyzacje/maszynka-do-shortsow)",
   "repository": {
     "type": "git",
     "url": "https://github.com/dariuszmlynarski/maszynka-do-rolek"

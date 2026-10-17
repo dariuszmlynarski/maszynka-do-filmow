@@ -1,4 +1,4 @@
-# Maszynka do rolek — instrukcja dla Claude
+# Maszynka do filmów — instrukcja dla Claude
 
 Fork `AIBiz-Automatyzacje/maszynka-do-shortsow` (Kacper Trzepieciński) przemalowany na markę Dariusza Młynarskiego. Silnik i format scenariusza zostają jak w oryginale; nasze jest to, co widać i słychać: paleta, czcionki, ton głosu, domena.
 

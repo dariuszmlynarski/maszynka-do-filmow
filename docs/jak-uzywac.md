@@ -1,4 +1,4 @@
-# Maszynka do shortsów — jak używać
+# Maszynka do filmów — jak używać
 
 ## Uruchomienie
 
@@ -19,7 +19,7 @@ Klucz zostaje na Twoim komputerze w pliku `dane/ustawienia.json`.
 ## Robienie rolki — krok po kroku
 
 ### 1. Scenariusz
-Kliknij **+ Nowa rolka**, wklej link do artykułu (albo opisz pomysł), wpisz długość w sekundach i kliknij **Utwórz i napisz scenariusz**. Claude sam napisze sceny. Trwa to 30–90 sekund. Działa na Twoim koncie Claude, bez dodatkowych kluczy.
+Kliknij **+ Nowy film**, zostaw „Rolka bez twarzy”, wklej link do artykułu (albo opisz pomysł), wpisz długość w sekundach i kliknij **Utwórz i napisz scenariusz**. Claude sam napisze sceny. Trwa to 30–90 sekund. Działa na Twoim koncie Claude, bez dodatkowych kluczy.
 
 Lista **Twoje rolki** po lewej to wszystkie Twoje projekty (wersje robocze i gotowe). Kliknij, żeby otworzyć.
 
@@ -48,14 +48,14 @@ Kliknij **Renderuj MP4**. Pasek postępu pokaże, ile zostało (zwykle 20–60 s
 Każdy render tworzy osobny plik z datą i godziną w nazwie, np. `rolka_2026-09-11_09-32-36.mp4`, w folderze `projekty/[nazwa-rolki]/`. Format: pion 1080×1920, 30 kl/s, gotowy na Reels, TikToka i Shorts.
 
 ### 5. Galeria
-Przycisk **Galeria rolek** (lewy panel) pokazuje wszystkie wygenerowane MP4 ze wszystkich rolek. Odtwarzasz je bezpośrednio w dashboardzie. Kliknięcie tytułu wraca do edycji tej rolki.
+Przycisk **Galeria** (lewy panel) pokazuje wszystkie wygenerowane MP4 ze wszystkich rolek. Odtwarzasz je bezpośrednio w dashboardzie. Kliknięcie tytułu wraca do edycji tej rolki.
 W edycji rolki zakładka **Wygenerowane wersje** pokazuje wszystkie wersje tylko tej jednej rolki.
 
 ## Explainer z nagrania kamery
 
 Gdy tłumaczysz temat do kamery, a obraz ma to pokazywać animacjami.
 
-1. Kliknij „Nowa rolka”, wybierz „Explainer z nagrania kamery”, wpisz tytuł.
+1. Kliknij „Nowy film”, wybierz „Explainer z nagrania kamery”, wpisz tytuł.
 2. Kliknij „Wgraj nagranie z kamery” albo wpisz ścieżkę do pliku na dysku i kliknij „Weź z dysku”. Przy dużych plikach ścieżka jest szybsza.
 3. Poczekaj. Maszynka spisuje, co mówisz, wycina pauzy, „yyy” i powtórzone podejścia, a potem planuje obraz do każdego zdania. Minuta nagrania to mniej więcej minuta czekania.
 4. Przejrzyj plan scen. Przy każdej scenie widzisz, co mówisz, układ kadru i opis tego, co widać. Zmień układ z listy, popraw opis i kliknij „Przebuduj według opisu” albo rozwiń „Klocki” i popraw tekst wprost.

@@ -1,4 +1,4 @@
-# Maszynka do rolek — DMProsper
+# Maszynka do filmów — DMProsper
 
 Lokalna aplikacja, która z linku albo pomysłu robi gotową rolkę (pion 1080×1920, 30 kl/s) na Reels, TikToka i Shorts. Scenariusz pisze Claude Code, lektora czyta ElevenLabs sklonowanym głosem Dariusza, wideo składa Remotion. Wszystko dzieje się lokalnie.
 
