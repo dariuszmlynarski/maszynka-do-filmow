@@ -144,7 +144,7 @@ export function zapiszScalajac(baza: Scenariusz, nowy: Scenariusz): Scenariusz {
 
 export const kopia = <T>(v: T): T => structuredClone(v);
 
-export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 45, rekord?: string): Scenariusz {
+export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 45, rekord?: string, typ: Scenariusz["typ"] = "rolka"): Scenariusz {
   let id = slug(tytul);
   let n = 2;
   while (fs.existsSync(katalogProjektu(id))) id = `${slug(tytul)}-${n++}`;
@@ -160,6 +160,7 @@ export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 
     zmieniono: teraz,
     napisy: true,
     sceny: [],
+    ...(typ === "explainer" ? { typ, a4: { sceny: [], swisty: true } } : {}),
   });
 }
 
@@ -169,7 +170,7 @@ export function najnowszyMp4(id: string): string | undefined {
   if (!fs.existsSync(kat)) return undefined;
   const pliki = fs
     .readdirSync(kat)
-    .filter((f) => /^rolka.*\.mp4$/.test(f))
+    .filter((f) => /^(rolka|film).*\.mp4$/.test(f))
     .map((f) => ({ f, t: fs.statSync(path.join(kat, f)).mtimeMs }))
     .sort((a, b) => b.t - a.t);
   return pliki[0]?.f;
@@ -180,6 +181,12 @@ function uzupelnijStatus(s: Scenariusz): Scenariusz {
   const mp4 = najnowszyMp4(s.id);
   const wszystkieAudio = s.sceny.length > 0 && s.sceny.every(audioAktualne);
   s.plikMp4 = mp4;
+  if (s.typ === "explainer") {
+    // Explainer nie ma lektora: „lektor” znaczy tu „plan gotowy, można renderować”.
+    const plan = !!s.a4?.sceny.length;
+    s.status = mp4 && plan ? "gotowe" : plan ? "lektor" : "scenariusz";
+    return s;
+  }
   s.status = mp4 && wszystkieAudio ? "gotowe" : wszystkieAudio ? "lektor" : "scenariusz";
   return s;
 }

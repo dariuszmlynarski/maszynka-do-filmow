@@ -30,6 +30,7 @@ import { odswiezPaczke, renderuj, stanRenderu, trwaRender } from "./render";
 import { napiszScenariusz, poprawScene, stanPisania, trwaPisanie } from "./scenarzysta";
 import { podsumowanie } from "./kontrola";
 import { audioRekordu, rolkiDoNagrania, sejfDostepny } from "./plan";
+import { generujMuzyke, przebudujScene, przetworz, przyjmijWideo, stanA4, trwaA4, zsynchronizuj, type RodzajWideo } from "./a4";
 
 const PORT = Number(process.env.PORT ?? 4545);
 const app = express();
@@ -102,9 +103,9 @@ app.get("/api/plan", (_req, res) => {
 app.get("/api/projekty", (_req, res) => res.json(listaProjektow()));
 
 app.post("/api/projekty", (req, res) => {
-  const { tytul, zrodlo, docelowaDlugosc, rekord } = req.body ?? {};
+  const { tytul, zrodlo, docelowaDlugosc, rekord, typ } = req.body ?? {};
   if (!tytul || typeof tytul !== "string") return blad(res, new Error("Podaj tytuł rolki."), 400);
-  res.json(utworzProjekt(tytul, zrodlo, Number(docelowaDlugosc) || 45, typeof rekord === "string" && rekord ? rekord : undefined));
+  res.json(utworzProjekt(tytul, zrodlo, Number(docelowaDlugosc) || 45, typeof rekord === "string" && rekord ? rekord : undefined, typ === "explainer" ? "explainer" : "rolka"));
 });
 
 app.get("/api/projekty/:id", (req, res) => {
@@ -190,7 +191,7 @@ app.get("/api/projekty/:id/kontrola", (req, res) => {
 });
 
 // ---- Galeria: wszystkie wygenerowane rolki ----
-const POPRAWNY_MP4 = /^rolka[a-z0-9_-]*\.mp4$/i;
+const POPRAWNY_MP4 = /^(rolka|film)[a-z0-9_-]*\.mp4$/i;
 
 app.get("/api/galeria", (_req, res) => {
   const wynik: { projektId: string; tytul: string; plik: string; rozmiar: number; data: string }[] = [];
@@ -352,6 +353,96 @@ app.post("/api/projekty/:id/efekt/:scenaId", async (req, res) => {
     const nazwa = `audio/${scena.id}-efekt-${hashTekstu(scena.efekt)}.mp3`;
     fs.writeFileSync(path.join(katalogProjektu(p.id), nazwa), audio);
     scena.efektAudio = { plik: nazwa, hash: hashTekstu(scena.efekt) };
+    res.json(zapiszScalajac(baza, p));
+  } catch (e) {
+    blad(res, e);
+  }
+});
+
+// ---- Explainer z kamery (ścieżka A4) ----
+const rodzajWideo = (v: unknown): RodzajWideo => (v === "ekran" ? "ekran" : "kamera");
+
+app.get("/api/projekty/:id/a4", (req, res) => {
+  res.json(stanA4(req.params.id) ?? { stan: "brak" });
+});
+
+// Plik wideo w ciele żądania, strumieniowo prosto na dysk (nagrania mają gigabajty).
+app.post("/api/projekty/:id/a4/wideo", (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  if (trwaA4(p.id)) return blad(res, new Error("Trwa przetwarzanie, poczekaj chwilę."), 409);
+  const rodzaj = rodzajWideo(req.query.rodzaj);
+  const nazwa = decodeURIComponent(String(req.get("x-nazwa-pliku") ?? "nagranie.mov"));
+  const kat = path.join(katalogProjektu(p.id), "zrodlo");
+  fs.mkdirSync(kat, { recursive: true });
+  const cel = path.join(kat, `oryginal-${rodzaj}${path.extname(nazwa).toLowerCase() || ".mov"}`);
+  const zapis = fs.createWriteStream(cel);
+  req.pipe(zapis);
+  zapis.on("finish", () => {
+    void przyjmijWideo(p.id, rodzaj, cel, nazwa, true);
+    res.json(stanA4(p.id));
+  });
+  zapis.on("error", (e) => blad(res, e));
+});
+
+// Plik leżący na dysku Maca — bez kopiowania przez przeglądarkę.
+app.post("/api/projekty/:id/a4/wideo-z-dysku", (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  if (trwaA4(p.id)) return blad(res, new Error("Trwa przetwarzanie, poczekaj chwilę."), 409);
+  const sciezka = String(req.body?.sciezka ?? "").trim().replace(/^~(?=\/)/, process.env.HOME ?? "~");
+  if (!sciezka || !fs.existsSync(sciezka)) return blad(res, new Error("Nie widzę takiego pliku na dysku."), 400);
+  void przyjmijWideo(p.id, rodzajWideo(req.body?.rodzaj), sciezka, path.basename(sciezka), false);
+  res.json(stanA4(p.id));
+});
+
+app.post("/api/projekty/:id/a4/przetworz", (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  if (!trwaA4(p.id)) void przetworz(p.id, !!req.body?.tylkoPlan);
+  res.json(stanA4(p.id) ?? { stan: "pracuje" });
+});
+
+app.post("/api/projekty/:id/a4/scena/:scenaId/przebuduj", (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  if (trwaA4(p.id)) return res.json(stanA4(p.id));
+  void przebudujScene(p.id, req.params.scenaId, String(req.body?.opis ?? ""));
+  res.json(stanA4(p.id));
+});
+
+app.post("/api/projekty/:id/a4/muzyka", (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  if (trwaA4(p.id)) return res.json(stanA4(p.id));
+  void generujMuzyke(p.id, String(req.body?.opis ?? ""));
+  res.json(stanA4(p.id));
+});
+
+// Własny plik muzyki zamiast generowanej.
+app.post("/api/projekty/:id/a4/muzyka-plik", express.raw({ type: () => true, limit: "100mb" }), (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  const dane = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+  if (!dane.length) return blad(res, new Error("Nie dotarł żaden plik."), 400);
+  const ext = path.extname(decodeURIComponent(String(req.get("x-nazwa-pliku") ?? ""))).toLowerCase() || ".mp3";
+  const plik = `audio/muzyka-${Date.now().toString(36)}${ext}`;
+  fs.mkdirSync(path.join(katalogProjektu(p.id), "audio"), { recursive: true });
+  fs.writeFileSync(path.join(katalogProjektu(p.id), plik), dane);
+  const baza = kopia(p);
+  p.a4 = p.a4 ?? { sceny: [] };
+  p.a4.muzyka = { plik, glosnosc: p.a4.muzyka?.glosnosc ?? 0.12, opis: "własny plik" };
+  res.json(zapiszScalajac(baza, p));
+});
+
+app.post("/api/projekty/:id/a4/synchronizuj", async (req, res) => {
+  const p = wczytajProjekt(req.params.id);
+  if (!p?.a4?.kamera || !p.a4.ekran) return blad(res, new Error("Potrzebne są oba nagrania: kamera i ekran."), 400);
+  try {
+    const kat = katalogProjektu(p.id);
+    const wynik = await zsynchronizuj(path.join(kat, p.a4.kamera.plik), path.join(kat, p.a4.ekran.plik));
+    const baza = kopia(p);
+    p.a4.ekran = { ...p.a4.ekran, ...wynik };
     res.json(zapiszScalajac(baza, p));
   } catch (e) {
     blad(res, e);

@@ -20,7 +20,7 @@ const CIAGLOSC = 0.6;
 /** Poniżej tej zgodności ze scenariuszem scena trafia do raportu. */
 const PROG_ZGODNOSCI = 0.8;
 
-function uruchom(program: string, argumenty: string[]): Promise<string> {
+export function uruchom(program: string, argumenty: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
     execFile(program, argumenty, { maxBuffer: 40 * 1024 * 1024 }, (err, stdout, stderr) => {
       if (err) return reject(new Error(stderr?.toString().slice(-500) || err.message));
@@ -46,7 +46,7 @@ print(json.dumps([{"t": w["word"], "s": w["start"], "k": w["end"]} for seg in r[
 `;
 
 let pythonMlx: string | null | undefined;
-async function znajdzPythonaMlx(): Promise<string | null> {
+export async function znajdzPythonaMlx(): Promise<string | null> {
   if (pythonMlx !== undefined) return pythonMlx;
   for (const kandydat of [process.env.WHISPER_PYTHON, "/usr/bin/python3", "python3"].filter((k): k is string => !!k)) {
     try {
@@ -59,7 +59,7 @@ async function znajdzPythonaMlx(): Promise<string | null> {
   return (pythonMlx = null);
 }
 
-async function transkrybujLokalnie(python: string, wav: string): Promise<SlowoNagrania[]> {
+export async function transkrybujLokalnie(python: string, wav: string): Promise<SlowoNagrania[]> {
   const wyjscie = await new Promise<string>((resolve, reject) => {
     execFile(python, ["-c", SKRYPT_MLX, wav, MODEL_MLX], { maxBuffer: 40 * 1024 * 1024 }, (err, stdout, stderr) => {
       if (err) return reject(new Error(`Lokalna transkrypcja nie powiodła się: ${stderr?.toString().slice(-400) || err.message}`));
@@ -77,7 +77,7 @@ async function transkrybujLokalnie(python: string, wav: string): Promise<SlowoNa
  * choć głos rusza na 3,23 s). Początek albo koniec słowa, który wpada w wykrytą ciszę,
  * dosuwamy do jej krawędzi — działa tak samo dla każdego silnika.
  */
-function dosunDoCiszy(slowa: SlowoNagrania[], ciszaNagrania: [number, number][]): SlowoNagrania[] {
+export function dosunDoCiszy(slowa: SlowoNagrania[], ciszaNagrania: [number, number][]): SlowoNagrania[] {
   return slowa.map((w) => {
     let { start, koniec } = w;
     const przedStartem = ciszaNagrania.find(([od, doKiedy]) => start >= od - 0.02 && start < doKiedy && doKiedy < koniec);
@@ -88,7 +88,7 @@ function dosunDoCiszy(slowa: SlowoNagrania[], ciszaNagrania: [number, number][])
   });
 }
 
-async function transkrybujScribe(klucz: string, plik: string): Promise<SlowoNagrania[]> {
+export async function transkrybujScribe(klucz: string, plik: string): Promise<SlowoNagrania[]> {
   const form = new FormData();
   form.append("model_id", "scribe_v1");
   form.append("language_code", "pol");

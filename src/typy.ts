@@ -1,5 +1,7 @@
 // Format scenariusza rolki. Ten sam plik czyta dashboard, serwer i Remotion.
 
+import type { DaneA4 } from "./a4/typy";
+
 export type Slowo = {
   tekst: string;
   start: number; // sekundy od początku sceny
@@ -151,6 +153,8 @@ export type StatusProjektu = "scenariusz" | "lektor" | "gotowe";
 
 export type Scenariusz = {
   id: string;
+  /** Rodzaj projektu: rolka z tekstu (domyślnie) albo explainer z nagrania kamery (ścieżka A4). */
+  typ?: "rolka" | "explainer";
   tytul: string;
   zrodlo?: string; // link lub opis pomysłu
   /** Rekord planu social media, z którego powstała rolka (ścieżka względem folderu postów, bez .md). */
@@ -163,6 +167,8 @@ export type Scenariusz = {
   uwagi?: string; // uwagi użytkownika dla Claude
   sceny: Scena[];
   plikMp4?: string;
+  /** Dane explainera (tylko gdy `typ` = "explainer"). */
+  a4?: DaneA4;
 };
 
 export type PropsRolki = {

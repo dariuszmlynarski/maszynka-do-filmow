@@ -145,7 +145,7 @@ Efektów dźwiękowych dawaj najwyżej co drugiej scenie. Sprawdzone opisy: "sho
 ODPOWIEDZ WYŁĄCZNIE poprawnym JSON: { "tytul": "krótki tytuł roboczy", "sceny": [ ... ] }. Żadnego tekstu przed ani po. Bez markdownu.`;
 }
 
-function wyciagnijJson(tekst: string): unknown {
+export function wyciagnijJson(tekst: string): unknown {
   const bezFence = tekst.replace(/```(?:json)?/gi, "").trim();
   const start = bezFence.indexOf("{");
   const koniec = bezFence.lastIndexOf("}");
@@ -194,7 +194,7 @@ function zapasowaKarta(ekran: unknown, opis: string | undefined, lektor: string)
   return { typ: "karta", naglowek, tekst: tekstem(e.tekst) ?? tekstem(e.opis) ?? undefined, ikona: "💡" };
 }
 
-function uruchomClaude(prompt: string): Promise<string> {
+export function uruchomClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const cwd = path.join(KATALOG_DANYCH, "claude-cwd");
     fs.mkdirSync(cwd, { recursive: true });

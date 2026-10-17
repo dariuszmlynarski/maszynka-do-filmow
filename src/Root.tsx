@@ -13,6 +13,8 @@ import { KontaktyFilm, kontaktyKlatki } from "./explainer/Kontakty";
 import { ZadaniaFilm, zadaniaKlatki } from "./explainer/Zadania";
 import { ZapowiedzFilm, zapowiedzKlatki } from "./explainer/Zapowiedz";
 import { WynikiFilm, wynikiKlatki } from "./explainer/Wyniki";
+import { FilmA4, klatkiA4, type PropsA4 } from "./a4/Film";
+import { A4_FPS, A4_SZER, A4_WYS } from "./a4/typy";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -28,6 +30,17 @@ export const RemotionRoot: React.FC = () => {
       calculateMetadata={({ props }) => ({
         durationInFrames: klatkiCalosci(props.scenariusz),
       })}
+    />
+    {/* Explainer z nagrania kamery (ścieżka A4): plan scen z dashboardu, 16:9 na YouTube. */}
+    <Composition
+      id="ExplainerA4"
+      component={FilmA4}
+      fps={A4_FPS}
+      width={A4_SZER}
+      height={A4_WYS}
+      durationInFrames={klatkiA4(PRZYKLAD)}
+      defaultProps={{ projekt: { ...PRZYKLAD, typ: "explainer", a4: { sceny: [] } }, bazaUrl: "" } satisfies PropsA4}
+      calculateMetadata={({ props }) => ({ durationInFrames: klatkiA4(props.projekt) })}
     />
     {/* Film „Czym jest lejek” do strefy partnera CNW (16:9, osobny od rolek). */}
     <Composition id="Lejki16x9" component={Explainer} fps={EX_FPS} width={EX_SZER} height={EX_WYS} durationInFrames={exKlatki()} defaultProps={{ zAwatarem: false }} />
