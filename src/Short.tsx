@@ -10,6 +10,7 @@ import { klatkiSceny, maPrzejscie, OGON_KONCOWY, PRZEJSCIE_KLATKI } from "./czas
 import { Tlo, Podpis, KontekstNapisow, KontekstSlow } from "./sceny/wspolne";
 import { punch } from "./ruch";
 import { Napisy } from "./sceny/Napisy";
+import { KontekstKadru, kadrFormatu, useKadr } from "./kadr";
 import { EkranCta, EkranKarta, EkranKod, EkranLiczba, EkranLista, EkranPorownanie, EkranTytul } from "./sceny/Ekrany";
 import { Ekran3D, Tlo3D } from "./sceny/Ekran3D";
 import { EkranWykres } from "./sceny/Wykres";
@@ -65,6 +66,7 @@ const SceneWidok: React.FC<{ scena: Scena; bazaUrl: string; napisy: boolean; pie
   // Uderzenie kamery na wejściu sceny: lekkie zbliżenie, które opada.
   // Zostaje także w pierwszej scenie — to jest ten „huk", nie wjazd z pustego.
   const skala = punch(frame, fps, [0], 0.03);
+  const k = useKadr();
   const tresc = (
     <KontekstNapisow.Provider value={napisy}>
       <KontekstSlow.Provider value={scena.audio?.slowa}>
@@ -76,7 +78,7 @@ const SceneWidok: React.FC<{ scena: Scena; bazaUrl: string; napisy: boolean; pie
     <Tlo>
       {scena.tlo3d && <Tlo3D ksztalt={scena.tlo3d} />}
       <Podpis />
-      <AbsoluteFill style={{ transform: `scale(${skala})`, transformOrigin: "540px 960px" }}>
+      <AbsoluteFill style={{ transform: `scale(${skala})`, transformOrigin: `${k.szer / 2}px ${k.wys / 2}px` }}>
         {pierwsza ? (
           // Ujemne `from` przesuwa wyłącznie czas ekranu. Audio i napisy zostają
           // na swoim miejscu, bo leżą poza tą sekwencją.
@@ -139,5 +141,9 @@ export const Short: React.FC<PropsRolki> = ({ scenariusz, bazaUrl }) => {
     }
   });
 
-  return <TransitionSeries>{elementy}</TransitionSeries>;
+  return (
+    <KontekstKadru.Provider value={kadrFormatu(scenariusz.format)}>
+      <TransitionSeries>{elementy}</TransitionSeries>
+    </KontekstKadru.Provider>
+  );
 };

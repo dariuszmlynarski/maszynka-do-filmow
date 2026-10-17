@@ -8,7 +8,7 @@ import { Tlo } from "../sceny/wspolne";
 import type { Scenariusz, Slowo } from "../typy";
 import { UkladKlockow } from "./klocki";
 import { kadr, mieszaj, type Prostokat } from "./uklady";
-import { A4_FPS, normujSlowo, osOdcinkow, slowaFilmu, type DaneA4, type OdcinekWOsi, type ScenaA4, type Uklad } from "./typy";
+import { A4_FPS, wymiaryA4, normujSlowo, osOdcinkow, slowaFilmu, type DaneA4, type OdcinekWOsi, type ScenaA4, type Uklad } from "./typy";
 
 export type PropsA4 = { projekt: Scenariusz; bazaUrl: string; bezNapisow?: boolean };
 
@@ -26,15 +26,17 @@ function scenaWKlatce(sceny: ScenaA4[], f: number): number {
 }
 
 /** Prostokąt warstwy w danej klatce, z płynnym przejściem między układem poprzedniej i bieżącej sceny. */
-function useProstokat(sceny: ScenaA4[], warstwa: "kamera" | "ekran", pionowa: boolean): Prostokat {
+type Format = "pion" | "poziom";
+
+function useProstokat(sceny: ScenaA4[], warstwa: "kamera" | "ekran", pionowa: boolean, format: Format): Prostokat {
   const f = useCurrentFrame();
-  if (!sceny.length) return kadr("twarz", pionowa)[warstwa];
+  if (!sceny.length) return kadr("twarz", pionowa, format)[warstwa];
   // Przejście zaczyna się chwilę przed cięciem, więc patrzymy na scenę, która zacznie się za pół przejścia.
   const i = scenaWKlatce(sceny, f + POL_PRZEJSCIA);
   const start = klatka(sceny[i].od);
-  const teraz = kadr(sceny[i].uklad, pionowa)[warstwa];
+  const teraz = kadr(sceny[i].uklad, pionowa, format)[warstwa];
   if (i === 0) return teraz;
-  const przed = kadr(sceny[i - 1].uklad, pionowa)[warstwa];
+  const przed = kadr(sceny[i - 1].uklad, pionowa, format)[warstwa];
   return mieszaj(przed, teraz, postep(f, start - POL_PRZEJSCIA, start + POL_PRZEJSCIA, E.inOutCubic));
 }
 
@@ -77,8 +79,8 @@ const Odcinki: React.FC<{ os: OdcinekWOsi[]; src: string; przesuniecie?: number;
   </>
 );
 
-const Kamera: React.FC<{ dane: DaneA4; os: OdcinekWOsi[]; bazaUrl: string }> = ({ dane, os, bazaUrl }) => {
-  const p = useProstokat(dane.sceny, "kamera", czyPionowa(dane));
+const Kamera: React.FC<{ dane: DaneA4; os: OdcinekWOsi[]; bazaUrl: string; format: Format }> = ({ dane, os, bazaUrl, format }) => {
+  const p = useProstokat(dane.sceny, "kamera", czyPionowa(dane), format);
   if (!dane.kamera) return null;
   return (
     <Okno p={p} obwodka>
@@ -87,8 +89,8 @@ const Kamera: React.FC<{ dane: DaneA4; os: OdcinekWOsi[]; bazaUrl: string }> = (
   );
 };
 
-const Ekran: React.FC<{ dane: DaneA4; os: OdcinekWOsi[]; bazaUrl: string }> = ({ dane, os, bazaUrl }) => {
-  const p = useProstokat(dane.sceny, "ekran", czyPionowa(dane));
+const Ekran: React.FC<{ dane: DaneA4; os: OdcinekWOsi[]; bazaUrl: string; format: Format }> = ({ dane, os, bazaUrl, format }) => {
+  const p = useProstokat(dane.sceny, "ekran", czyPionowa(dane), format);
   if (!dane.ekran || p.widoczny === 0) return null;
   return (
     <Okno p={p}>
@@ -119,9 +121,10 @@ export function wejsciaKlockow(scena: ScenaA4, slowa: Slowo[]): Record<string, n
 
 const SAMOTNE = new Set(["kafel", "ikona", "licznik", "cytat", "obraz", "naglowek", "podswietlenie"]);
 
-const KlockiSceny: React.FC<{ scena: ScenaA4; slowa: Slowo[]; bazaUrl: string; dlugosc: number; pionowa: boolean }> = ({ scena, slowa, bazaUrl, dlugosc, pionowa }) => {
+const KlockiSceny: React.FC<{ scena: ScenaA4; slowa: Slowo[]; bazaUrl: string; dlugosc: number; pionowa: boolean; format: Format }> = ({ scena, slowa, bazaUrl, dlugosc, pionowa, format }) => {
   const f = useCurrentFrame();
-  const k = kadr(scena.uklad, pionowa);
+  const k = kadr(scena.uklad, pionowa, format);
+  const { wys } = wymiaryA4(format);
   const wejscia = useMemo(() => wejsciaKlockow(scena, slowa), [scena, slowa]);
   if (!k.klocki || !scena.klocki.length) return null;
   const r = k.klocki;
@@ -135,7 +138,7 @@ const KlockiSceny: React.FC<{ scena: ScenaA4; slowa: Slowo[]; bazaUrl: string; d
   const pierwszy = Math.min(...Object.values(wejscia));
   const p = postep(f, pierwszy - 2, pierwszy + 8, E.outCubic);
   return (
-    <div style={{ position: "absolute", left: r.x, bottom: 1080 - r.y - r.h, width: "fit-content", minWidth: 360, maxWidth: r.w, maxHeight: r.h, opacity: Math.min(p, wyjscie), transform: `translateY(${(1 - p) * 20}px)`, padding: 34, borderRadius: r.r, backgroundColor: "rgba(18,10,5,.84)", boxShadow: "0 24px 60px rgba(0,0,0,.45)" }}>
+    <div style={{ position: "absolute", left: r.x, bottom: wys - r.y - r.h, width: "fit-content", minWidth: 360, maxWidth: r.w, maxHeight: r.h, opacity: Math.min(p, wyjscie), transform: `translateY(${(1 - p) * 20}px)`, padding: 34, borderRadius: r.r, backgroundColor: "rgba(18,10,5,.84)", boxShadow: "0 24px 60px rgba(0,0,0,.45)" }}>
       {tresc}
     </div>
   );
@@ -162,15 +165,15 @@ function linieNapisow(slowa: Slowo[]): Linia[] {
   return linie;
 }
 
-const Napisy: React.FC<{ slowa: Slowo[] }> = ({ slowa }) => {
+const Napisy: React.FC<{ slowa: Slowo[]; format: Format }> = ({ slowa, format }) => {
   const f = useCurrentFrame();
   const t = f / A4_FPS;
   const linie = useMemo(() => linieNapisow(slowa), [slowa]);
   const linia = linie.find((l, i) => t >= l.start - 0.05 && t < Math.min(l.koniec + 0.7, linie[i + 1]?.start ?? Infinity));
   if (!linia) return null;
   return (
-    <div style={{ position: "absolute", left: 0, right: 0, bottom: 56, display: "flex", justifyContent: "center" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", maxWidth: 1500, padding: "16px 26px", borderRadius: 24, backgroundColor: "rgba(32,32,32,.92)", border: `2px solid ${KOLOR.line}`, fontFamily: CZCIONKA.napisy, fontWeight: 800, fontSize: 46, lineHeight: 1.2, color: KOLOR.ink }}>
+    <div style={{ position: "absolute", left: 0, right: 0, bottom: format === "pion" ? 390 : 56, display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", maxWidth: format === "pion" ? 940 : 1500, padding: "16px 26px", borderRadius: 24, backgroundColor: "rgba(32,32,32,.92)", border: `2px solid ${KOLOR.line}`, fontFamily: CZCIONKA.napisy, fontWeight: 800, fontSize: 46, lineHeight: 1.2, color: KOLOR.ink }}>
         {linia.slowa.map((w, i) => {
           const teraz = t >= w.start - 0.03 && t < w.koniec + 0.06;
           return (
@@ -215,21 +218,22 @@ export const FilmA4: React.FC<PropsA4> = ({ projekt, bazaUrl, bezNapisow }) => {
   const slowa = useMemo(() => slowaFilmu(dane), [dane]);
   const klatki = os.length ? os[os.length - 1].klatkaWyjscia + os[os.length - 1].klatki : A4_FPS * 5;
   const swisty = useMemo(() => swistyFilmu(dane), [dane]);
+  const format: Format = projekt.format ?? "poziom";
   return (
     <AbsoluteFill>
       <Tlo />
-      <Ekran dane={dane} os={os} bazaUrl={bazaUrl} />
-      <Kamera dane={dane} os={os} bazaUrl={bazaUrl} />
+      <Ekran dane={dane} os={os} bazaUrl={bazaUrl} format={format} />
+      <Kamera dane={dane} os={os} bazaUrl={bazaUrl} format={format} />
       {dane.sceny.map((s, i) => {
         const od = klatka(s.od);
         const dlugosc = Math.max(1, klatka(dane.sceny[i + 1]?.od ?? s.do) - od);
         return (
           <Sequence key={s.id} from={od} durationInFrames={dlugosc + 8} layout="none">
-            <KlockiSceny scena={s} slowa={slowa} bazaUrl={bazaUrl} dlugosc={dlugosc} pionowa={czyPionowa(dane)} />
+            <KlockiSceny scena={s} slowa={slowa} bazaUrl={bazaUrl} dlugosc={dlugosc} pionowa={czyPionowa(dane)} format={format} />
           </Sequence>
         );
       })}
-      {projekt.napisy !== false && !bezNapisow && <Napisy slowa={slowa} />}
+      {projekt.napisy !== false && !bezNapisow && <Napisy slowa={slowa} format={format} />}
       <Podklad dane={dane} bazaUrl={bazaUrl} klatki={klatki} />
       {swisty.map((f) => (
         <Sequence key={f} from={Math.max(0, f - 8)} durationInFrames={30} layout="none">

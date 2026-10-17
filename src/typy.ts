@@ -155,6 +155,8 @@ export type Scenariusz = {
   id: string;
   /** Rodzaj projektu: rolka z tekstu (domyślnie) albo explainer z nagrania kamery (ścieżka A4). */
   typ?: "rolka" | "explainer";
+  /** Pion 9:16 (Reels, Shorts) albo poziom 16:9 (YouTube). Brak = domyślny dla rodzaju: rolka w pionie, explainer w poziomie. */
+  format?: "pion" | "poziom";
   tytul: string;
   zrodlo?: string; // link lub opis pomysłu
   /** Rekord planu social media, z którego powstała rolka (ścieżka względem folderu postów, bez .md). */

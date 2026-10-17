@@ -3,7 +3,8 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import type { Ekran, Ksztalt3D } from "../typy";
 import * as THREE from "three";
-import { KOLOR, PISMO, SAFE } from "../marka";
+import { KOLOR, PISMO } from "../marka";
+import { useKadr } from "../kadr";
 import { Dopisek, Kicker } from "./wspolne";
 import { wjazd } from "../ruch";
 
@@ -164,6 +165,7 @@ export const Ekran3D: React.FC<{ ekran: E3D }> = ({ ekran }) => {
   const nag = wjazd(frame, 4, 60);
   const dop = wjazd(frame, 16, 40);
   const Ksztalt = bryla(ekran.ksztalt);
+  const k = useKadr();
 
   return (
     <AbsoluteFill>
@@ -182,7 +184,7 @@ export const Ekran3D: React.FC<{ ekran: E3D }> = ({ ekran }) => {
           <Ksztalt frame={frame} />
         </ThreeCanvas>
       </AbsoluteFill>
-      <div style={{ position: "absolute", top: SAFE.gora, left: 80, right: 80 }}>
+      <div style={{ position: "absolute", top: k.safe.gora, left: k.margines, right: k.margines }}>
         {ekran.etykieta && <Kicker style={{ marginBottom: 26 }}>{ekran.etykieta}</Kicker>}
         <div
           style={{

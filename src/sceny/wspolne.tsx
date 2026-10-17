@@ -5,13 +5,11 @@ import {
   CIEN_UNIESIONY,
   CZCIONKA,
   KOLOR,
-  MARGINES,
   PISMO,
   PROMIEN,
   PROMIEN_MALY,
   PODPIS_MARKI,
   POSWIATA_TLA,
-  SAFE,
   SIATKA_DRYF_PX_S,
   SIATKA_KOLOR,
   SIATKA_PX,
@@ -19,6 +17,7 @@ import {
 import { E, postep, sway as swayTransform } from "../ruch";
 import type { Slowo } from "../typy";
 import { kotwice } from "../kotwice";
+import { useKadr } from "../kadr";
 
 /** Czekoladowe tło z kratką, która powoli płynie w górę. Ekran nigdy nie stoi martwy. */
 export const Tlo: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
@@ -68,21 +67,30 @@ export const PAS_NAPISOW = 250;
 /** Obszar treści w bezpiecznym polu kadru. */
 export const Tresc: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => {
   const zNapisami = useContext(KontekstNapisow);
+  const k = useKadr();
+  const wysokosc = k.safe.dol - k.safe.gora - (zNapisami ? k.pasNapisow : 0);
+  const szerokosc = k.szer - 2 * k.margines;
+  // W poziomie scena dostaje swój obszar w skali zoom: projektujemy w pikselach pionu, zmniejszamy całość.
   return (
-  <AbsoluteFill
-    style={{
-      top: SAFE.gora,
-      height: SAFE.dol - SAFE.gora - (zNapisami ? PAS_NAPISOW : 0),
-      paddingLeft: MARGINES,
-      paddingRight: MARGINES,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      ...style,
-    }}
-  >
-    {children}
-  </AbsoluteFill>
+    <div style={{ position: "absolute", left: k.margines, top: k.safe.gora, width: szerokosc, height: wysokosc }}>
+      <div
+        style={{
+          width: szerokosc / k.zoom,
+          height: wysokosc / k.zoom,
+          transform: k.zoom === 1 ? undefined : `scale(${k.zoom})`,
+          transformOrigin: "0 0",
+          paddingLeft: k.kolumna ? Math.max(0, (szerokosc / k.zoom - k.kolumna) / 2) : undefined,
+          paddingRight: k.kolumna ? Math.max(0, (szerokosc / k.zoom - k.kolumna) / 2) : undefined,
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          ...style,
+        }}
+      >
+        {children}
+      </div>
+    </div>
   );
 };
 
@@ -272,11 +280,13 @@ export function useSway(amplituda = 1.4, okres = 2.6, faza = 0): string {
 }
 
 /** Podpis marki u góry kadru, w bezpiecznym polu. */
-export const Podpis: React.FC = () => (
+export const Podpis: React.FC = () => {
+  const k = useKadr();
+  return (
   <div
     style={{
       position: "absolute",
-      top: SAFE.gora - 76,
+      top: k.format === "poziom" ? 44 : k.safe.gora - 76,
       left: 0,
       right: 0,
       textAlign: "center",
@@ -289,7 +299,8 @@ export const Podpis: React.FC = () => (
   >
     {PODPIS_MARKI}
   </div>
-);
+  );
+};
 
 /** Pionowe połączenie dwóch kafelków: kropkowana linia albo strzałka w dół. */
 export const Lacznik: React.FC<{ wysokosc?: number; opoznienie?: number; strzalka?: boolean }> = ({

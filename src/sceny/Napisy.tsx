@@ -1,8 +1,9 @@
 import React from "react";
 import { useCurrentFrame, useVideoConfig } from "remotion";
 import type { Slowo } from "../typy";
-import { CIEN_KARTY, CZCIONKA, KOLOR, SAFE } from "../marka";
+import { CIEN_KARTY, CZCIONKA, KOLOR } from "../marka";
 import { szacujCzasLektora } from "../czas";
+import { useKadr } from "../kadr";
 
 const MAX_SLOW_W_LINII = 5;
 const MAX_ZNAKOW_W_LINII = 30;
@@ -48,6 +49,7 @@ function szacujSlowa(tekst: string): Slowo[] {
 
 export const Napisy: React.FC<{ slowa?: Slowo[]; lektor: string }> = ({ slowa, lektor }) => {
   const frame = useCurrentFrame();
+  const k = useKadr();
   const { fps } = useVideoConfig();
   const t = frame / fps;
   const lista = slowa && slowa.length ? slowa : szacujSlowa(lektor);
@@ -65,7 +67,7 @@ export const Napisy: React.FC<{ slowa?: Slowo[]; lektor: string }> = ({ slowa, l
         position: "absolute",
         left: 70,
         right: 70,
-        bottom: 1920 - SAFE.dol + 30,
+        bottom: k.wys - k.safe.dol + 30,
         display: "flex",
         justifyContent: "center",
       }}
@@ -81,7 +83,7 @@ export const Napisy: React.FC<{ slowa?: Slowo[]; lektor: string }> = ({ slowa, l
           borderRadius: 30,
           boxShadow: CIEN_KARTY,
           padding: "22px 30px",
-          maxWidth: 880,
+          maxWidth: k.format === "poziom" ? 1400 : 880,
           fontFamily: CZCIONKA.napisy,
           fontWeight: 800,
           fontSize: 48,

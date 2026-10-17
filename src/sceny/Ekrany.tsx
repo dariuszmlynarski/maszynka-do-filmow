@@ -1,4 +1,5 @@
 import React from "react";
+import { useKadr } from "../kadr";
 import { staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import type { Ekran } from "../typy";
 import { CIEN_NAKLEJKI, CIEN_UNIESIONY, CZCIONKA, KOLOR, PISMO, PROMIEN, PROMIEN_MALY } from "../marka";
@@ -299,9 +300,11 @@ const SiatkaSztuk: React.FC<{ ile: number; startKlatka: number }> = ({ ile, star
 
 export const EkranPorownanie: React.FC<{ ekran: Ek<"porownanie"> }> = ({ ekran }) => {
   const wejscia = useKotwice(2, { start: 0, odstep: 16 });
+  // W poziomie dwie strony stają obok siebie: tak porównanie czyta się naturalnie i mieści w niższym kadrze.
+  const poziom = useKadr().format === "poziom";
   return (
     <Tresc>
-      <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
+      <div style={{ display: "flex", flexDirection: poziom ? "row" : "column", gap: 40, alignItems: "stretch" }}>
         <Kolumna dane={ekran.lewo} opoznienie={wejscia[0]} domyslnieZle zPrawej={false} />
         <Kolumna dane={ekran.prawo} opoznienie={wejscia[1]} zPrawej />
       </div>
@@ -319,7 +322,7 @@ const Kolumna: React.FC<{
   const zle = dane.zle ?? domyslnieZle ?? false;
   const s = wjazdZBoku(frame, opoznienie, zPrawej);
   return (
-    <Karta style={{ ...s, borderColor: zle ? KOLOR.line : KOLOR.accent, borderWidth: 3 }}>
+    <Karta style={{ ...s, flex: 1, borderColor: zle ? KOLOR.line : KOLOR.accent, borderWidth: 3 }}>
       <div style={{ fontSize: PISMO.tytulKarty, fontWeight: 800, marginBottom: 20, color: zle ? KOLOR.muted : KOLOR.accent }}>
         {zle ? "✕ " : "✓ "}
         {dane.naglowek}

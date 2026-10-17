@@ -6,6 +6,9 @@ export const A4_FPS = 30;
 export const A4_SZER = 1920;
 export const A4_WYS = 1080;
 
+/** Wymiary kadru explainera: domyślnie poziom (YouTube), na życzenie pion (Reels, Shorts). */
+export const wymiaryA4 = (format: "pion" | "poziom" | undefined) => (format === "pion" ? { szer: 1080, wys: 1920 } : { szer: A4_SZER, wys: A4_WYS });
+
 /** Plik wideo w folderze projektu (po konwersji na stałe 30 kl./s i H.264). */
 export type Zrodlo = {
   plik: string; // względem folderu projektu, np. zrodlo/kamera.mp4

@@ -19,7 +19,8 @@ export type Kadr = { kamera: Prostokat; ekran: Prostokat; klocki: Prostokat | nu
  * `pionowa`: nagranie z telefonu trzymanego pionowo. Na pełnym ekranie 16:9 zostałoby z niego samo czoło,
  * więc twarz staje w kolumnie na środku, a po bokach widać tło marki.
  */
-export function kadr(uklad: Uklad, pionowa = false): Kadr {
+export function kadr(uklad: Uklad, pionowa = false, format: "pion" | "poziom" = "poziom"): Kadr {
+  if (format === "pion") return kadrPion(uklad);
   switch (uklad) {
     case "twarz":
       // Twarz gra główną rolę; klocki najwyżej jako mała plansza w lewym dolnym rogu, nad napisami.
@@ -39,6 +40,30 @@ export function kadr(uklad: Uklad, pionowa = false): Kadr {
       return { kamera: UKRYTY(OKIENKO), ekran: PELNY, klocki: null, tloKlockow: false };
     case "ekran-okienko":
       return { kamera: OKIENKO, ekran: { x: 60, y: 60, w: 1360, h: 765, r: 24, widoczny: 1 }, klocki: null, tloKlockow: false };
+  }
+}
+
+// ---- Pion 1080×1920 (Reels, Shorts) ----
+// Bezpieczne pole jak w rolkach: górne 250 px i dolne 360 px zasłania interfejs aplikacji, napisy stoją tuż nad dolnym.
+
+const PELNY_PION: Prostokat = { x: 0, y: 0, w: 1080, h: 1920, r: 0, widoczny: 1 };
+const OKIENKO_PION: Prostokat = { x: 340, y: 1000, w: 400, h: 400, r: 200, widoczny: 1 };
+const EKRAN_PION: Prostokat = { x: 0, y: 560, w: 1080, h: 608, r: 0, widoczny: 1 };
+
+function kadrPion(uklad: Uklad): Kadr {
+  switch (uklad) {
+    case "twarz":
+      return { kamera: PELNY_PION, ekran: UKRYTY(EKRAN_PION), klocki: { x: 60, y: 880, w: 960, h: 500, r: 28, widoczny: 1 }, tloKlockow: true };
+    case "okienko":
+      return { kamera: OKIENKO_PION, ekran: UKRYTY(EKRAN_PION), klocki: { x: 70, y: 260, w: 940, h: 700, r: 0, widoczny: 1 }, tloKlockow: false };
+    case "podzial":
+      return { kamera: { x: 0, y: 0, w: 1080, h: 960, r: 0, widoczny: 1 }, ekran: UKRYTY(EKRAN_PION), klocki: { x: 70, y: 1000, w: 940, h: 400, r: 0, widoczny: 1 }, tloKlockow: false };
+    case "grafika":
+      return { kamera: UKRYTY(OKIENKO_PION), ekran: UKRYTY(EKRAN_PION), klocki: { x: 70, y: 260, w: 940, h: 1120, r: 0, widoczny: 1 }, tloKlockow: false };
+    case "ekran":
+      return { kamera: UKRYTY(OKIENKO_PION), ekran: EKRAN_PION, klocki: null, tloKlockow: false };
+    case "ekran-okienko":
+      return { kamera: OKIENKO_PION, ekran: { x: 0, y: 260, w: 1080, h: 608, r: 0, widoczny: 1 }, klocki: null, tloKlockow: false };
   }
 }
 
