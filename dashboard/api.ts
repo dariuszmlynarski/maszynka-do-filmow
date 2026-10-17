@@ -38,6 +38,13 @@ export type StanRenderu = {
   plik?: string;
 };
 
+/** Zapis odrzucony, bo projekt na dysku jest nowszy niż wersja, na której pracował dashboard. */
+export class BladKonfliktu extends Error {
+  constructor(komunikat: string, public projekt: Scenariusz) {
+    super(komunikat);
+  }
+}
+
 async function zapytaj<T>(sciezka: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
@@ -49,6 +56,7 @@ async function zapytaj<T>(sciezka: string, init?: RequestInit): Promise<T> {
     throw new Error("Nie mogę połączyć się z serwerem maszynki. Czy jest uruchomiony?");
   }
   const dane = await res.json().catch(() => ({}));
+  if (res.status === 409 && dane?.konflikt && dane.projekt) throw new BladKonfliktu(dane.blad, dane.projekt);
   if (!res.ok) throw new Error(dane?.blad ?? `Błąd ${res.status}`);
   return dane as T;
 }

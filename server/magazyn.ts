@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Scenariusz } from "../src/typy";
 import { audioAktualne, hashTekstu } from "../src/hash";
+import { scal } from "../src/scalanie";
 export { audioAktualne, hashTekstu };
 
 export const KATALOG_GLOWNY = path.resolve(import.meta.dirname, "..");
@@ -130,6 +131,18 @@ export function zapiszProjekt(s: Scenariusz): Scenariusz {
   fs.writeFileSync(path.join(kat, "scenariusz.json"), JSON.stringify(s, null, 2));
   return s;
 }
+
+/**
+ * Zapis po długiej operacji (lektor, nagranie, Claude piszący scenariusz). Operacja pracowała
+ * na kopii sprzed kilkudziesięciu sekund, a w tym czasie projekt mógł zmienić dashboard albo
+ * zapis przez API. Wnosimy więc tylko to, co operacja zmieniła względem `baza`, na to, co jest na dysku.
+ */
+export function zapiszScalajac(baza: Scenariusz, nowy: Scenariusz): Scenariusz {
+  const dysk = wczytajProjekt(nowy.id);
+  return zapiszProjekt(dysk ? scal(baza, nowy, dysk) : nowy);
+}
+
+export const kopia = <T>(v: T): T => structuredClone(v);
 
 export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 45, rekord?: string): Scenariusz {
   let id = slug(tytul);

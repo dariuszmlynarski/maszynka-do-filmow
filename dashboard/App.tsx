@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { Scena, Scenariusz } from "../src/typy";
 import { czasCalosci, formatujCzas } from "../src/czas";
 import { audioAktualne } from "../src/hash";
-import { api, urlPliku, type Kontrola, type PozycjaPlanu, type StanPisania, type StanRenderu, type Status } from "./api";
+import { scal } from "../src/scalanie";
+import { api, BladKonfliktu, urlPliku, type Kontrola, type PozycjaPlanu, type StanPisania, type StanRenderu, type Status } from "./api";
 import { domyslnyEkran, EdytorSceny } from "./EdytorSceny";
 import { Podglad } from "./Podglad";
 import { Ustawienia } from "./Ustawienia";
@@ -47,6 +48,29 @@ export const App: React.FC = () => {
   };
   const brudny = useRef(false);
   const timerZapisu = useRef<number | undefined>(undefined);
+  // Wersja projektu, którą ostatnio widzieliśmy na serwerze. Od niej liczymy, co zmieniliśmy tutaj.
+  const baza = useRef<Scenariusz | null>(null);
+  const licznikZmian = useRef(0);
+
+  /**
+   * Zapis z kontrolą wersji. Gdy ktoś inny (Claude przez API, lektor, nagranie) zmienił projekt
+   * w międzyczasie, serwer odsyła swoją wersję, a my nanosimy na nią tylko własne zmiany.
+   */
+  const zapiszBezpiecznie = useCallback(async (nowy: Scenariusz): Promise<Scenariusz> => {
+    let doZapisu = nowy;
+    for (let proba = 0; proba < 3; proba++) {
+      try {
+        const zapisany = await api.zapiszProjekt(doZapisu);
+        baza.current = zapisany;
+        return zapisany;
+      } catch (e) {
+        if (!(e instanceof BladKonfliktu) || baza.current?.id !== nowy.id) throw e;
+        doZapisu = { ...scal(baza.current, doZapisu, e.projekt), zmieniono: e.projekt.zmieniono };
+        baza.current = e.projekt;
+      }
+    }
+    throw new Error("Projekt zmienia się bez przerwy w innym miejscu. Odczekaj chwilę i spróbuj ponownie.");
+  }, []);
 
   const odswiezStatus = useCallback(async () => {
     try {
@@ -73,6 +97,7 @@ export const App: React.FC = () => {
     try {
       const p = await api.projekt(id);
       brudny.current = false;
+      baza.current = p;
       setAktywny(p);
       setAktywnaScena(p.sceny[0]?.id);
       setRender(null);
@@ -101,6 +126,7 @@ export const App: React.FC = () => {
       if (aktywny && !brudny.current) {
         const zDysku = lista.find((p) => p.id === aktywny.id);
         if (zDysku && zDysku.zmieniono !== aktywny.zmieniono) {
+          baza.current = zDysku;
           setAktywny(zDysku);
         }
       }
@@ -111,13 +137,15 @@ export const App: React.FC = () => {
   // Autozapis 800 ms po ostatniej zmianie.
   const zmien = (nowy: Scenariusz) => {
     brudny.current = true;
+    const nr = ++licznikZmian.current;
     setAktywny(nowy);
     window.clearTimeout(timerZapisu.current);
     timerZapisu.current = window.setTimeout(async () => {
       try {
-        const zapisany = await api.zapiszProjekt(nowy);
-        brudny.current = false;
-        setAktywny((a) => (a && a.id === zapisany.id ? { ...a, status: zapisany.status, zmieniono: zapisany.zmieniono, plikMp4: zapisany.plikMp4 } : a));
+        const zapisany = await zapiszBezpiecznie(nowy);
+        if (licznikZmian.current === nr) brudny.current = false;
+        // Zmiany wpisane w trakcie zapisu zostają; reszta przychodzi z serwera (także to, co scalił).
+        setAktywny((a) => (a && a.id === zapisany.id ? scal(nowy, a, zapisany) : a));
         void odswiezListe();
       } catch (e) {
         setKomunikat({ typ: "blad", tekst: `Nie udało się zapisać: ${(e as Error).message}` });
@@ -152,9 +180,10 @@ export const App: React.FC = () => {
     setZajete(true);
     setKomunikat({ typ: "info", tekst: "Pracuję…" });
     try {
-      if (brudny.current) await api.zapiszProjekt(aktywny);
+      if (brudny.current) await zapiszBezpiecznie(aktywny);
       const p = await co();
       brudny.current = false;
+      baza.current = p;
       setAktywny(p);
       const tekst = typeof sukces === "function" ? sukces() : sukces;
       setKomunikat(tekst ? { typ: "ok", tekst } : null);
@@ -172,7 +201,7 @@ export const App: React.FC = () => {
     window.clearTimeout(timerZapisu.current);
     try {
       if (brudny.current) {
-        await api.zapiszProjekt(aktywny);
+        await zapiszBezpiecznie(aktywny);
         brudny.current = false;
       }
       setRender(await api.startRenderu(aktywny.id));
@@ -188,7 +217,7 @@ export const App: React.FC = () => {
     window.clearTimeout(timerZapisu.current);
     try {
       if (brudny.current) {
-        await api.zapiszProjekt(aktywny);
+        await zapiszBezpiecznie(aktywny);
         brudny.current = false;
       }
       setKomunikat(null);
@@ -204,7 +233,7 @@ export const App: React.FC = () => {
     window.clearTimeout(timerZapisu.current);
     try {
       if (brudny.current) {
-        await api.zapiszProjekt(aktywny);
+        await zapiszBezpiecznie(aktywny);
         brudny.current = false;
       }
       setKomunikat(null);

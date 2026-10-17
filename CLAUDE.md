@@ -100,6 +100,7 @@ Pełne typy: `src/typy.ts`. Przykład: `src/przyklad.ts`.
 - Gdy użytkownik mówi „przeczytaj uwagi do rolki X": otwórz `scenariusz.json`, przeczytaj pole `uwagi`, wprowadź zmiany, wyczyść `uwagi`, zaktualizuj `zmieniono`.
 - Przy edycji istniejącego scenariusza NIE usuwaj pól `audio` i `efektAudio` ze scen, których tekst lektora się nie zmienił. Jeśli zmieniasz `lektor`, usuń `audio` tej sceny (dashboard pokaże „wygeneruj ponownie").
 - Nie edytuj `scenariusz.json`, gdy użytkownik właśnie generuje lektora lub renderuje.
+- Zapis przez `PUT /api/projekty/:id` wysyłaj z polem `zmieniono` z odczytu (`GET`). Gdy projekt zmienił się w międzyczasie, serwer odpowiada 409 i odsyła aktualną wersję: nanieś na nią swoje zmiany i zapisz ponownie. Otwarty dashboard robi to samo i scala różnice, więc zamykanie zakładki nie jest potrzebne. Zapisując plik bezpośrednio na dysk, zawsze podbijaj `zmieniono`, bo po nim dashboard poznaje, że coś się zmieniło.
 
 ## Zmiany w wyglądzie scen
 

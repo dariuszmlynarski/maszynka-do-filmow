@@ -18,7 +18,9 @@ import {
   wczytajProjekt,
   wczytajUstawienia,
   sprzatnijKosz,
+  kopia,
   zapiszProjekt,
+  zapiszScalajac,
   zapiszUstawienia,
 } from "./magazyn";
 import { generujEfekt, generujLektora, listaGlosow } from "./elevenlabs";
@@ -117,6 +119,12 @@ app.put("/api/projekty/:id", (req, res) => {
   if (trwaPisanie(stary.id)) return blad(res, new Error("Claude właśnie pisze ten scenariusz. Poczekaj chwilę."), 409);
   const nowy = req.body as Scenariusz;
   if (nowy.id !== stary.id) return blad(res, new Error("Nie można zmienić identyfikatora projektu."), 400);
+  // Zapis musi znać wersję, na której pracował (`zmieniono` z odczytu). Gdy na dysku jest już nowsza,
+  // odsyłamy ją z kodem 409 zamiast nadpisywać: dashboard scala różnice, a Claude czyta jeszcze raz.
+  // Bez tego ostatni zapis wygrywał i otwarta zakładka kasowała zapisy robione przez API (19.09.2026).
+  if (nowy.zmieniono && nowy.zmieniono !== stary.zmieniono) {
+    return res.status(409).json({ blad: "Projekt zmienił się w międzyczasie. Wczytaj go ponownie i nanieś zmiany.", konflikt: true, projekt: stary });
+  }
   // Zachowaj audio ze starego projektu, jeśli tekst się nie zmienił, a klient go nie przysłał.
   for (const scena of nowy.sceny) {
     const staraScena = stary.sceny.find((s) => s.id === scena.id);
@@ -150,7 +158,8 @@ app.post("/api/projekty/:id/scenariusz", (req, res) => {
   if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
   if (trwaPisanie(p.id)) return res.json(stanPisania(p.id));
   const tryb = req.body?.tryb === "poprawki" ? "poprawki" : "nowy";
-  void napiszScenariusz(p, tryb, zapiszProjekt);
+  const baza = kopia(p);
+  void napiszScenariusz(p, tryb, (nowy) => zapiszScalajac(baza, nowy));
   res.json(stanPisania(p.id));
 });
 
@@ -164,7 +173,8 @@ app.post("/api/projekty/:id/scena/:scenaId/popraw", (req, res) => {
     scena.opis = req.body.opis;
     zapiszProjekt(p);
   }
-  void poprawScene(p, scena.id, zapiszProjekt);
+  const baza = kopia(p);
+  void poprawScene(p, scena.id, (nowy) => zapiszScalajac(baza, nowy));
   res.json(stanPisania(p.id));
 });
 
@@ -250,9 +260,10 @@ async function lektorDlaSceny(projekt: Scenariusz, scenaId: string, wymus = fals
 app.post("/api/projekty/:id/lektor/:scenaId", async (req, res) => {
   const p = wczytajProjekt(req.params.id);
   if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
+  const baza = kopia(p);
   try {
     await lektorDlaSceny(p, req.params.scenaId);
-    res.json(zapiszProjekt(p));
+    res.json(zapiszScalajac(baza, p));
   } catch (e) {
     blad(res, e);
   }
@@ -262,17 +273,18 @@ app.post("/api/projekty/:id/lektor", async (req, res) => {
   const p = wczytajProjekt(req.params.id);
   if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
   const bledy: string[] = [];
+  const baza = kopia(p);
   for (const s of p.sceny) {
     if (audioAktualne(s) && !req.body?.wszystkie) continue;
     try {
       await lektorDlaSceny(p, s.id, !!req.body?.wszystkie);
-      zapiszProjekt(p);
+      zapiszScalajac(baza, p);
     } catch (e) {
       bledy.push(`${s.id}: ${e instanceof Error ? e.message : e}`);
       break;
     }
   }
-  const zapisany = zapiszProjekt(p);
+  const zapisany = zapiszScalajac(baza, p);
   if (bledy.length) return res.status(500).json({ blad: bledy.join("\n"), projekt: zapisany });
   res.json(zapisany);
 });
@@ -285,6 +297,7 @@ async function pocnijNagranie(res: Odp, id: string, dane: Buffer, nazwaPliku: st
   const klucz = kluczApi() || undefined;
   if (!dane.length) return blad(res, new Error("Nie dotarł żaden plik audio."), 400);
   if (!p.sceny.some((s) => s.lektor.trim())) return blad(res, new Error("Scenariusz nie ma tekstu lektora, nie ma do czego dopasować nagrania."), 400);
+  const baza = kopia(p);
   try {
     const { raport } = await wgrajNagranie({
       projekt: p,
@@ -293,7 +306,7 @@ async function pocnijNagranie(res: Odp, id: string, dane: Buffer, nazwaPliku: st
       rozszerzenie: path.extname(nazwaPliku).slice(1),
       klucz,
     });
-    res.json({ projekt: zapiszProjekt(p), raport });
+    res.json({ projekt: zapiszScalajac(baza, p), raport });
   } catch (e) {
     blad(res, e);
   }
@@ -333,12 +346,13 @@ app.post("/api/projekty/:id/efekt/:scenaId", async (req, res) => {
     scena.efektAudio = undefined;
     return res.json(zapiszProjekt(p));
   }
+  const baza = kopia(p);
   try {
     const audio = await generujEfekt(klucz, scena.efekt, Number(req.body?.sekundy) || 1.5);
     const nazwa = `audio/${scena.id}-efekt-${hashTekstu(scena.efekt)}.mp3`;
     fs.writeFileSync(path.join(katalogProjektu(p.id), nazwa), audio);
     scena.efektAudio = { plik: nazwa, hash: hashTekstu(scena.efekt) };
-    res.json(zapiszProjekt(p));
+    res.json(zapiszScalajac(baza, p));
   } catch (e) {
     blad(res, e);
   }
