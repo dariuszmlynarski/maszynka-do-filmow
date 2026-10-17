@@ -454,7 +454,7 @@ app.post("/api/projekty/:id/render", (req, res) => {
   const p = wczytajProjekt(req.params.id);
   if (!p) return blad(res, new Error("Nie ma takiego projektu."), 404);
   if (trwaRender(p.id)) return res.json(stanRenderu(p.id));
-  if (!p.sceny.length) return blad(res, new Error("Scenariusz nie ma żadnych scen."), 400);
+  if (p.typ === "explainer" ? !p.a4?.kamera || !p.a4.sceny.length : !p.sceny.length) return blad(res, new Error(p.typ === "explainer" ? "Najpierw wgraj nagranie i poczekaj na plan scen." : "Scenariusz nie ma żadnych scen."), 400);
   void renderuj(p, bazaUrl(p.id));
   res.json(stanRenderu(p.id));
 });

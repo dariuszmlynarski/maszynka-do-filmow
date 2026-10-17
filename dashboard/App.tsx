@@ -3,14 +3,20 @@ import type { Scena, Scenariusz } from "../src/typy";
 import { czasCalosci, formatujCzas } from "../src/czas";
 import { audioAktualne } from "../src/hash";
 import { scal } from "../src/scalanie";
+import { klatkiA4 } from "../src/a4/Film";
 import { api, BladKonfliktu, urlPliku, type Kontrola, type PozycjaPlanu, type StanPisania, type StanRenderu, type Status } from "./api";
 import { domyslnyEkran, EdytorSceny } from "./EdytorSceny";
 import { Podglad } from "./Podglad";
 import { Ustawienia } from "./Ustawienia";
 import { Galeria } from "./Galeria";
+import { EdytorExplainera } from "./EdytorExplainera";
+import { PodgladA4 } from "./PodgladA4";
 import { AlertTriangle, AudioLines, Check, ChevronLeft, ChevronRight, Clapperboard, Film, FolderOpen, Mic, Play, Plus, Sparkles, Trash2, Upload, Wand2, XCircle } from "lucide-react";
 
 const NAZWY_STATUSOW = { scenariusz: "Scenariusz", lektor: "Lektor gotowy", gotowe: "Rolka gotowa" } as const;
+const NAZWY_STATUSOW_A4 = { scenariusz: "Czeka na nagranie", lektor: "Plan gotowy", gotowe: "Film gotowy" } as const;
+const nazwaStatusu = (p: Scenariusz) => (p.typ === "explainer" ? NAZWY_STATUSOW_A4 : NAZWY_STATUSOW)[p.status];
+const liczbaScen = (p: Scenariusz) => (p.typ === "explainer" ? (p.a4?.sceny.length ?? 0) : p.sceny.length);
 const I = { className: "ikona", strokeWidth: 1.75 } as const;
 
 
@@ -108,6 +114,16 @@ export const App: React.FC = () => {
       setKomunikat({ typ: "blad", tekst: (e as Error).message });
     }
   }, []);
+
+  // Odświeżenie aktywnego projektu po pracy serwera, bez zmiany zaznaczonej sceny.
+  const przeladuj = useCallback(async () => {
+    if (!aktywny) return;
+    const p = await api.projekt(aktywny.id).catch(() => null);
+    if (!p) return;
+    baza.current = p;
+    if (!brudny.current) setAktywny(p);
+    void odswiezListe();
+  }, [aktywny, odswiezListe]);
 
   // Start: status, lista, ostatnio otwarty projekt.
   useEffect(() => {
@@ -280,7 +296,7 @@ export const App: React.FC = () => {
 
   // Kontrola jakości przelicza się chwilę po każdej zmianie scenariusza.
   useEffect(() => {
-    if (!aktywny) {
+    if (!aktywny || aktywny.typ === "explainer") {
       setKontrola(null);
       return;
     }
@@ -315,7 +331,7 @@ export const App: React.FC = () => {
   const zaDlugo = aktywny ? czas > aktywny.docelowaDlugosc * 1.15 : false;
 
   return (
-    <div className={`uklad ${podgladZwiniety ? "podglad-zwiniety" : ""}`}>
+    <div className={`uklad ${podgladZwiniety ? "podglad-zwiniety" : aktywny?.typ === "explainer" && widok === "edycja" ? "szeroki" : ""}`}>
       <aside className="panel lewy">
         <div className="logo">
           <span className="znaczek"><Clapperboard {...I} style={{ width: 13, height: 13 }} /></span>
@@ -334,10 +350,10 @@ export const App: React.FC = () => {
           <div className="lista-projektow">
             {projekty.map((p) => (
               <button key={p.id} className={`projekt ${widok === "edycja" && aktywny?.id === p.id ? "aktywny" : ""}`} onClick={() => { setWidok("edycja"); setZakladka("sceny"); void wczytaj(p.id); }}>
-                <span className={`status-kropka ${p.status}`} title={NAZWY_STATUSOW[p.status]} />
+                <span className={`status-kropka ${p.status}`} title={nazwaStatusu(p)} />
                 <span>
                   <span className="tytul">{p.tytul}</span>
-                  <span className="meta">{NAZWY_STATUSOW[p.status]}, {p.sceny.length} scen</span>
+                  <span className="meta">{p.typ === "explainer" ? "Explainer · " : ""}{nazwaStatusu(p)}, {liczbaScen(p)} scen</span>
                 </span>
               </button>
             ))}
@@ -378,12 +394,88 @@ export const App: React.FC = () => {
             <div className="ikona-duza"><Clapperboard {...I} style={{ width: 20, height: 20 }} /></div>
             Wybierz rolkę z listy albo utwórz nową.
           </div>
+        ) : aktywny.typ === "explainer" ? (
+          <>
+            <div className="naglowek-projektu">
+              <div className="wiersz-tytulu">
+                <input className="tytul-input" value={aktywny.tytul} onChange={(e) => zmien({ ...aktywny, tytul: e.target.value })} aria-label="Tytuł filmu" />
+                <span className={`odznaka ${aktywny.status}`}>{nazwaStatusu(aktywny)}</span>
+              </div>
+              <div className="akcje">
+                <label className="przelacznik">
+                  <input type="checkbox" checked={aktywny.napisy} onChange={(e) => zmien({ ...aktywny, napisy: e.target.checked })} /> Napisy
+                </label>
+                <button className="btn glowny" disabled={!aktywny.a4?.sceny.length || (render && render.stan !== "gotowe" && render.stan !== "blad") || false} onClick={startRenderu}>
+                  <Clapperboard {...I} /> Renderuj film
+                </button>
+                <span className="odstep" />
+                <button className="btn cichy ikonowy" onClick={() => api.otworzFolder(aktywny.id)} title="Pokaż folder w Finderze" aria-label="Pokaż folder w Finderze">
+                  <FolderOpen {...I} />
+                </button>
+                <button
+                  className="btn cichy ikonowy niebezpieczny"
+                  title="Usuń film"
+                  aria-label="Usuń film"
+                  onClick={async () => {
+                    if (!confirm(`Usunąć „${aktywny.tytul}”? Trafi do folderu _kosz.`)) return;
+                    await api.usunProjekt(aktywny.id);
+                    setAktywny(null);
+                    void odswiezListe();
+                  }}
+                >
+                  <Trash2 {...I} />
+                </button>
+              </div>
+            </div>
+            <div className="tresc">
+              {aktywny.plikMp4 && !render && (
+                <div className="komunikat ok">
+                  <Check {...I} />
+                  <span>Ostatni gotowy film: <strong>{aktywny.plikMp4}</strong></span>
+                  <span className="odstep" />
+                  <a className="btn maly" href={urlPliku(aktywny.id, aktywny.plikMp4)} target="_blank" rel="noreferrer"><Play {...I} /> Otwórz</a>
+                  <button className="btn maly" onClick={() => api.otworzFolder(aktywny.id)}><FolderOpen {...I} /> Finder</button>
+                </div>
+              )}
+              {komunikat && (
+                <div className={`komunikat ${komunikat.typ}`} onClick={() => setKomunikat(null)}>
+                  {komunikat.tekst}
+                </div>
+              )}
+              {render && (
+                <div className="karta" style={{ marginBottom: 14, padding: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                    <strong>{render.stan === "gotowe" ? "Film gotowy" : render.stan === "blad" ? "Render nie powiódł się" : "Renderuję film"}</strong>
+                    <span className="male">{Math.round(render.postep * 100)}%</span>
+                  </div>
+                  <div className="postep">
+                    <div style={{ width: `${render.postep * 100}%` }} />
+                  </div>
+                  <div className="male" style={{ marginTop: 8, whiteSpace: "pre-wrap" }}>{render.komunikat}</div>
+                  {render.stan === "gotowe" && (
+                    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                      <a className="btn" href={urlPliku(aktywny.id, render.plik ?? aktywny.plikMp4 ?? "")} target="_blank" rel="noreferrer"><Play {...I} /> Otwórz MP4</a>
+                      <button className="btn" onClick={() => api.otworzFolder(aktywny.id)}><FolderOpen {...I} /> Pokaż w Finderze</button>
+                    </div>
+                  )}
+                </div>
+              )}
+              <div className="zakladki">
+                <button className={zakladka === "sceny" ? "aktywna" : ""} onClick={() => setZakladka("sceny")}>Nagranie i plan</button>
+                <button className={zakladka === "wersje" ? "aktywna" : ""} onClick={() => setZakladka("wersje")}>Wygenerowane wersje</button>
+              </div>
+              {zakladka === "wersje" && <Galeria projektId={aktywny.id} onOtworzProjekt={() => {}} odswiez={licznikGalerii} />}
+              {zakladka === "sceny" && (
+                <EdytorExplainera projekt={aktywny} aktywnaScena={aktywnaScena} onAktywnaScena={setAktywnaScena} zmien={zmien} odswiez={przeladuj} setKomunikat={setKomunikat} />
+              )}
+            </div>
+          </>
         ) : (
           <>
             <div className="naglowek-projektu">
               <div className="wiersz-tytulu">
                 <input className="tytul-input" value={aktywny.tytul} onChange={(e) => zmien({ ...aktywny, tytul: e.target.value })} aria-label="Tytuł rolki" />
-                <span className={`odznaka ${aktywny.status}`}>{NAZWY_STATUSOW[aktywny.status]}</span>
+                <span className={`odznaka ${aktywny.status}`}>{nazwaStatusu(aktywny)}</span>
               </div>
               <div className="zrodlo-wiersz">
                 <span>Źródło</span>
@@ -567,7 +659,19 @@ export const App: React.FC = () => {
             </button>
           </div>
         )}
-        {podgladZwiniety ? null : aktywny ? (
+        {podgladZwiniety ? null : aktywny?.typ === "explainer" ? (
+          <>
+            <PodgladA4 projekt={aktywny} aktywnaScena={aktywnaScena} />
+            <div className="licznik">
+              <span>
+                <strong>{formatujCzas(klatkiA4(aktywny) / 30)}</strong>
+                <span className="male"> po cięciach</span>
+              </span>
+              <span className="male">{aktywny.a4?.sceny.length ?? 0} scen</span>
+            </div>
+            <p className="male" style={{ margin: "10px 0 0" }}>Podgląd pokazuje to samo, co wyjdzie z renderu. Kliknij scenę w planie, a podgląd do niej przeskoczy.</p>
+          </>
+        ) : aktywny ? (
           <>
             <Podglad scenariusz={aktywny} aktywnaScena={aktywnaScena} />
             <div className="licznik">
@@ -590,13 +694,13 @@ export const App: React.FC = () => {
       {pokazNowa && (
         <NowaRolka
           onZamknij={() => setPokazNowa(false)}
-          onUtworz={async (tytul, zrodlo, dl, rekord) => {
-            const p = await api.nowyProjekt(tytul, zrodlo, dl, rekord);
+          onUtworz={async (tytul, zrodlo, dl, rekord, typ) => {
+            const p = await api.nowyProjekt(tytul, zrodlo, dl, rekord, typ);
             setPokazNowa(false);
             setWidok("edycja");
             await odswiezListe();
             await wczytaj(p.id);
-            if (zrodlo) setPisanie(await api.napiszScenariusz(p.id, "nowy"));
+            if (zrodlo && typ !== "explainer") setPisanie(await api.napiszScenariusz(p.id, "nowy"));
           }}
         />
       )}
@@ -639,7 +743,8 @@ const PanelKontroli: React.FC<{ kontrola: Kontrola | null; onPokazScene: (id: st
   );
 };
 
-const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zrodlo: string, dl: number, rekord?: string) => Promise<void> }> = ({ onZamknij, onUtworz }) => {
+const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zrodlo: string, dl: number, rekord?: string, typ?: "rolka" | "explainer") => Promise<void> }> = ({ onZamknij, onUtworz }) => {
+  const [typ, setTyp] = useState<"rolka" | "explainer">("rolka");
   const [tytul, setTytul] = useState("");
   const [zrodlo, setZrodlo] = useState("");
   const [dl, setDl] = useState(45);
@@ -665,7 +770,25 @@ const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zro
   return (
     <div className="dialog-tlo" onClick={onZamknij}>
       <div className="karta dialog" onClick={(e) => e.stopPropagation()}>
-        <h1>Nowa rolka</h1>
+        <h1>{typ === "explainer" ? "Nowy explainer" : "Nowa rolka"}</h1>
+        <div className="skroty" style={{ margin: "10px 0 12px" }}>
+          <button className={`btn maly ${typ === "rolka" ? "" : "cichy"}`} onClick={() => setTyp("rolka")}>Rolka bez twarzy (z tekstu)</button>
+          <button className={`btn maly ${typ === "explainer" ? "" : "cichy"}`} onClick={() => setTyp("explainer")}>Explainer z nagrania kamery</button>
+        </div>
+        {typ === "explainer" ? (
+          <>
+            <p className="male">Mówisz do kamery, maszynka robi resztę: wycina pauzy i powtórki, planuje grafiki pod każde zdanie i składa film 16:9 z Twoją twarzą, animacjami, napisami i podkładem. Nagranie wgrasz w następnym kroku.</p>
+            <div className="pole">
+              <label>Tytuł roboczy</label>
+              <input value={tytul} onChange={(e) => setTytul(e.target.value)} placeholder="np. Jak zbudować kontekst dla Claude" autoFocus />
+            </div>
+            <div className="stopka">
+              <button className="btn" onClick={onZamknij}>Anuluj</button>
+              <button className="btn glowny" disabled={!tytul.trim()} onClick={() => onUtworz(tytul.trim(), "", 0, undefined, "explainer")}>Utwórz explainer</button>
+            </div>
+          </>
+        ) : (
+        <>
         <p className="male">Wklej link do artykułu albo opisz pomysł. Claude sam napisze scenariusz na wybraną długość, a Ty go poprawisz.</p>
         {plan.length > 0 && (
           <div className="pole">
@@ -715,6 +838,8 @@ const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zro
             {zrodlo.trim() ? <><Sparkles {...I} /> Utwórz i napisz scenariusz</> : "Utwórz pustą rolkę"}
           </button>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

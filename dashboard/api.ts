@@ -77,6 +77,8 @@ export type PozycjaPlanu = {
 
 export type WynikNagrania = { projekt: Scenariusz; raport: string };
 
+export type StanA4 = { stan: "brak" | "pracuje" | "gotowe" | "blad"; etap?: string; komunikat?: string };
+
 export const api = {
   status: () => zapytaj<Status>("/api/status"),
   zapiszUstawienia: (u: Partial<Status> & { elevenLabsApiKey?: string }) =>
@@ -87,8 +89,8 @@ export const api = {
 
   projekty: () => zapytaj<Scenariusz[]>("/api/projekty"),
   projekt: (id: string) => zapytaj<Scenariusz>(`/api/projekty/${id}`),
-  nowyProjekt: (tytul: string, zrodlo?: string, docelowaDlugosc?: number, rekord?: string) =>
-    zapytaj<Scenariusz>("/api/projekty", { method: "POST", body: JSON.stringify({ tytul, zrodlo, docelowaDlugosc, rekord }) }),
+  nowyProjekt: (tytul: string, zrodlo?: string, docelowaDlugosc?: number, rekord?: string, typ?: "rolka" | "explainer") =>
+    zapytaj<Scenariusz>("/api/projekty", { method: "POST", body: JSON.stringify({ tytul, zrodlo, docelowaDlugosc, rekord, typ }) }),
   zapiszProjekt: (s: Scenariusz) => zapytaj<Scenariusz>(`/api/projekty/${s.id}`, { method: "PUT", body: JSON.stringify(s) }),
   usunProjekt: (id: string) => zapytaj<{ ok: true }>(`/api/projekty/${id}`, { method: "DELETE" }),
   otworzFolder: (id: string) => zapytaj<{ ok: true }>(`/api/projekty/${id}/otworz-folder`, { method: "POST" }),
@@ -116,6 +118,28 @@ export const api = {
 
   galeria: () => zapytaj<WpisGalerii[]>("/api/galeria"),
   usunRolke: (id: string, plik: string) => zapytaj<{ ok: true }>(`/api/projekty/${id}/rolki/${plik}`, { method: "DELETE" }),
+
+  // Explainer z kamery (ścieżka A4)
+  stanA4: (id: string) => zapytaj<StanA4>(`/api/projekty/${id}/a4`),
+  wgrajWideo: (id: string, plik: File, rodzaj: "kamera" | "ekran") =>
+    zapytaj<StanA4>(`/api/projekty/${id}/a4/wideo?rodzaj=${rodzaj}`, {
+      method: "POST",
+      body: plik,
+      headers: { "Content-Type": "application/octet-stream", "X-Nazwa-Pliku": encodeURIComponent(plik.name) },
+    }),
+  wideoZDysku: (id: string, sciezka: string, rodzaj: "kamera" | "ekran") =>
+    zapytaj<StanA4>(`/api/projekty/${id}/a4/wideo-z-dysku`, { method: "POST", body: JSON.stringify({ sciezka, rodzaj }) }),
+  przetworzA4: (id: string, tylkoPlan = false) => zapytaj<StanA4>(`/api/projekty/${id}/a4/przetworz`, { method: "POST", body: JSON.stringify({ tylkoPlan }) }),
+  przebudujSceneA4: (id: string, scenaId: string, opis: string) =>
+    zapytaj<StanA4>(`/api/projekty/${id}/a4/scena/${scenaId}/przebuduj`, { method: "POST", body: JSON.stringify({ opis }) }),
+  muzykaA4: (id: string, opis: string) => zapytaj<StanA4>(`/api/projekty/${id}/a4/muzyka`, { method: "POST", body: JSON.stringify({ opis }) }),
+  muzykaPlikA4: (id: string, plik: File) =>
+    zapytaj<Scenariusz>(`/api/projekty/${id}/a4/muzyka-plik`, {
+      method: "POST",
+      body: plik,
+      headers: { "Content-Type": "application/octet-stream", "X-Nazwa-Pliku": encodeURIComponent(plik.name) },
+    }),
+  synchronizujA4: (id: string) => zapytaj<Scenariusz>(`/api/projekty/${id}/a4/synchronizuj`, { method: "POST", body: "{}" }),
 
   startRenderu: (id: string) => zapytaj<StanRenderu>(`/api/projekty/${id}/render`, { method: "POST" }),
   stanRenderu: (id: string) => zapytaj<StanRenderu>(`/api/projekty/${id}/render`),

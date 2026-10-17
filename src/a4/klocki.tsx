@@ -312,7 +312,7 @@ export const UkladKlockow: React.FC<{
   bazaUrl: string;
   dlugosc: number;
 }> = ({ klocki, wejscia, szerokosc, wysrodkuj, bazaUrl, dlugosc }) => {
-  const s = Math.max(0.75, Math.min(1.4, szerokosc / 1000));
+  const s = Math.max(0.8, Math.min(1.45, szerokosc / 880));
   const { gora, rzad } = podzialNaRzad(klocki);
   const rysuj = (k: Klocek, poziomo: boolean) => {
     const K = KOMPONENTY[k.typ];
