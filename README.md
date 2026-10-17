@@ -18,14 +18,14 @@ W fabryce wideo DM to **ścieżka A3 — rolka bez twarzy**: zero kamery, zero a
 Najprościej: otwórz Claude Code, wklej link do tego repo i napisz:
 
 ```
-Pobierz ten projekt i uruchom go: https://github.com/dariuszmlynarski/maszynka-do-rolek
+Pobierz ten projekt i uruchom go: https://github.com/dariuszmlynarski/maszynka-do-filmow
 ```
 
 Claude sam sklonuje kod, zainstaluje biblioteki i otworzy dashboard w przeglądarce (http://localhost:5757). Potem kliknij **Ustawienia głosu**, wklej klucz ElevenLabs i wybierz swój głos.
 
 Ręcznie, bez Claude'a:
 
-1. `git clone https://github.com/dariuszmlynarski/maszynka-do-rolek.git` albo „Code → Download ZIP".
+1. `git clone https://github.com/dariuszmlynarski/maszynka-do-filmow.git` albo „Code → Download ZIP".
 2. Kliknij dwa razy **Uruchom maszynkę.command** (macOS; za pierwszym razem prawy klik → „Otwórz"). Na Windowsie: `npm install --legacy-peer-deps && npm start`.
 3. W przeglądarce otworzy się http://localhost:5757. Okno Terminala zostaw otwarte.
 
