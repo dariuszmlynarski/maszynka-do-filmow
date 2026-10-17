@@ -19,6 +19,10 @@ Właściciel jest osobą nietechniczną. Pisz krótko, po polsku, bez żargonu. 
 
 Uruchomienie: `npm install --legacy-peer-deps` (raz), potem `npm start` (albo dwuklik na `Uruchom maszynkę.command`). Gdy użytkownik prosi „pobierz i uruchom”: sklonuj repo, zainstaluj, odpal `npm start` w tle i otwórz http://localhost:5757 w przeglądarce. Dashboard: http://localhost:5757, serwer: http://localhost:4545.
 
+## Explainer z kamery (ścieżka A4)
+
+Drugi typ projektu (`"typ": "explainer"`): nagranie Dariusza do kamery → plan scen → film 16:9 z animacjami na słowo. Dane siedzą w `scenariusz.json` pod kluczem `a4` (format w `src/a4/typy.ts`), przebieg w `server/a4.ts`, kompozycja `ExplainerA4` w `src/a4/`. Zasady planu scen są w funkcji `zasadyPlanu()` w `server/a4.ts` — zmieniasz je w rozmowie, zmieniasz i tam. Prowadzenie krok po kroku: skill `/video-explainer`.
+
 ## Scenariusze pisze też sam dashboard
 
 Serwer uruchamia `claude -p` w tle (`server/scenarzysta.ts`): przycisk „Napisz scenariusz” (z linku/pomysłu) i „Zastosuj uwagi” (poprawki wg pola `uwagi`). Zasady scenariusza żyją w funkcji `zasady()` w tym pliku — jeśli zmieniasz zasady poniżej, zmień je też tam.

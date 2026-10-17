@@ -51,6 +51,18 @@ Każdy render tworzy osobny plik z datą i godziną w nazwie, np. `rolka_2026-09
 Przycisk **Galeria rolek** (lewy panel) pokazuje wszystkie wygenerowane MP4 ze wszystkich rolek. Odtwarzasz je bezpośrednio w dashboardzie. Kliknięcie tytułu wraca do edycji tej rolki.
 W edycji rolki zakładka **Wygenerowane wersje** pokazuje wszystkie wersje tylko tej jednej rolki.
 
+## Explainer z nagrania kamery
+
+Gdy tłumaczysz temat do kamery, a obraz ma to pokazywać animacjami.
+
+1. Kliknij „Nowa rolka”, wybierz „Explainer z nagrania kamery”, wpisz tytuł.
+2. Kliknij „Wgraj nagranie z kamery” albo wpisz ścieżkę do pliku na dysku i kliknij „Weź z dysku”. Przy dużych plikach ścieżka jest szybsza.
+3. Poczekaj. Maszynka spisuje, co mówisz, wycina pauzy, „yyy” i powtórzone podejścia, a potem planuje obraz do każdego zdania. Minuta nagrania to mniej więcej minuta czekania.
+4. Przejrzyj plan scen. Przy każdej scenie widzisz, co mówisz, układ kadru i opis tego, co widać. Zmień układ z listy, popraw opis i kliknij „Przebuduj według opisu” albo rozwiń „Klocki” i popraw tekst wprost.
+5. Jeśli pokazujesz prezentację albo Zooma, wgraj też to nagranie w sekcji „Drugie źródło”, a potem kliknij „Zaplanuj obraz od nowa”. Sprawdź w podglądzie, czy obraz zgadza się z głosem; suwak przesuwa go o jedną klatkę.
+6. W sekcji „Dźwięk” wpisz nastrój i kliknij „Wygeneruj podkład” albo wgraj własną muzykę.
+7. Kliknij „Renderuj film”. Mac musi być podłączony do prądu, bo uśpiony przerywa render. Gotowy plik pojawi się w folderze projektu jako `film_<data>.mp4`.
+
 ## Typy scen
 
 | Typ | Kiedy używać |
