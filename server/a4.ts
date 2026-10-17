@@ -372,11 +372,11 @@ KLOCKI (pola wspólne: "typ", opcjonalnie "wejscie" = słowo z wypowiedzi, przy 
 - linia-czasu: {"punkty": ["krok 1–4 słowa", ...]} — 3 do 5 kroków po kolei
 - porownanie: {"lewo": {"naglowek": "Źle", "punkty": ["..."]}, "prawo": {"naglowek": "Dobrze", "punkty": ["..."]}}`;
 
-function zasadyPlanu(maEkran: boolean): string {
+function zasadyPlanu(maEkran: boolean, pion = false): string {
   const uklady = UKLADY.filter((u) => maEkran || !u.startsWith("ekran"))
     .map((u) => `- ${u}: ${NAZWY_UKLADOW[u]}`)
     .join("\n");
-  return `Planujesz obraz do filmu explainer 16:9 na YouTube, w którym Dariusz Młynarski (marka osobista, „mądry kolega, nie guru”) tłumaczy temat do kamery. Jego twarz przeplata się z animowanymi grafikami, które pokazują to, o czym akurat mówi, zsynchronizowane ze słowami.
+  return `Planujesz obraz do filmu explainer ${pion ? "pionowego 9:16 na Reels i Shorts (klocki stoją w wąskiej kolumnie, więc najwyżej 3 na scenę i krótkie teksty)" : "16:9 na YouTube"}, w którym Dariusz Młynarski (marka osobista, „mądry kolega, nie guru”) tłumaczy temat do kamery. Jego twarz przeplata się z animowanymi grafikami, które pokazują to, o czym akurat mówi, zsynchronizowane ze słowami.
 
 Dla każdej sceny (jedno zdanie Dariusza) wybierasz UKŁAD KADRU i skład KLOCKÓW.
 
@@ -438,14 +438,14 @@ const poprawnyUklad = (u: unknown, maEkran: boolean): Uklad | null =>
   (UKLADY as readonly string[]).includes(String(u)) && (maEkran || !String(u).startsWith("ekran")) ? (u as Uklad) : null;
 
 /** Plan dla wszystkich scen, partiami po 40, żeby długi film nie rozsadził odpowiedzi. */
-async function zaplanuj(sceny: ScenaA4[], maEkran: boolean, postep: (n: number) => void): Promise<ScenaA4[]> {
+async function zaplanuj(sceny: ScenaA4[], maEkran: boolean, pion: boolean, postep: (n: number) => void): Promise<ScenaA4[]> {
   const wynik = sceny.map((s) => ({ ...s }));
   const PARTIA = 40;
   for (let start = 0; start < sceny.length; start += PARTIA) {
     postep(start);
     const partia = sceny.slice(start, start + PARTIA);
     const kontekst = start > 0 ? `\nPOPRZEDNIE SCENY (już zaplanowane, dla ciągłości): ${wynik.slice(Math.max(0, start - 3), start).map((s) => `[${s.id}] ${s.uklad}`).join(", ")}\n` : "";
-    const prompt = `${zasadyPlanu(maEkran)}
+    const prompt = `${zasadyPlanu(maEkran, pion)}
 ${kontekst}
 SCENY (id, czas trwania, co mówi Dariusz):
 ${partia.map((s) => `[${s.id}] (${(s.do - s.od).toFixed(1)} s) ${s.tekst}`).join("\n")}
@@ -521,7 +521,7 @@ export async function przetworz(id: string, tylkoPlan = false): Promise<void> {
     ustaw(id, "plan", `Planuję obraz do ${sceny.length} scen…`);
     let plan: ScenaA4[];
     try {
-      plan = await zaplanuj(sceny, !!dane.ekran, (n) => ustaw(id, "plan", `Planuję obraz: sceny ${n + 1}–${Math.min(sceny.length, n + 40)} z ${sceny.length}…`));
+      plan = await zaplanuj(sceny, !!dane.ekran, p.format === "pion", (n) => ustaw(id, "plan", `Planuję obraz: sceny ${n + 1}–${Math.min(sceny.length, n + 40)} z ${sceny.length}…`));
     } catch (e) {
       plan = planZapasowy(sceny);
       raport.push(`Plan zapasowy, bo Claude nie odpowiedział: ${e instanceof Error ? e.message : e}`);
@@ -548,7 +548,7 @@ export async function przebudujScene(id: string, scenaId: string, opis: string):
     const p = wczytajProjekt(id);
     const s = p?.a4?.sceny.find((x) => x.id === scenaId);
     if (!p || !s) throw new Error("Nie ma takiej sceny.");
-    const prompt = `${zasadyPlanu(!!p.a4?.ekran)}
+    const prompt = `${zasadyPlanu(!!p.a4?.ekran, p.format === "pion")}
 
 PRZEBUDOWUJESZ JEDNĄ SCENĘ.
 CO MÓWI DARIUSZ: ${s.tekst}

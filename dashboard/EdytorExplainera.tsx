@@ -313,7 +313,7 @@ export const EdytorExplainera: React.FC<{
           </div>
         )}
 
-        <details className="drugie-zrodlo" open={!!dane.ekran}>
+        <details className="drugie-zrodlo" open={!!dane.ekran || !!dane.zEkranem}>
           <summary>Drugie źródło: nagranie ekranu albo Zooma (opcjonalnie)</summary>
           {dane.ekran ? (
             <>

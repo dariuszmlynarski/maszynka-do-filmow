@@ -157,6 +157,8 @@ export type Scenariusz = {
   typ?: "rolka" | "explainer";
   /** Pion 9:16 (Reels, Shorts) albo poziom 16:9 (YouTube). Brak = domyślny dla rodzaju: rolka w pionie, explainer w poziomie. */
   format?: "pion" | "poziom";
+  /** Rolka: kto mówi. "nagranie" = Dariusz nagrywa scenariusz sam, „lektor” (domyślnie) = klon ElevenLabs. */
+  glos?: "lektor" | "nagranie";
   tytul: string;
   zrodlo?: string; // link lub opis pomysłu
   /** Rekord planu social media, z którego powstała rolka (ścieżka względem folderu postów, bez .md). */

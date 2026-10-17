@@ -108,6 +108,8 @@ export type DaneA4 = {
   sceny: ScenaA4[];
   muzyka?: Muzyka;
   swisty?: boolean;
+  /** Film zakładany od razu z nagraniem ekranu: dashboard otwiera sekcję drugiego źródła. */
+  zEkranem?: boolean;
 };
 
 // ---- Oś czasu: surówka → gotowy film ----

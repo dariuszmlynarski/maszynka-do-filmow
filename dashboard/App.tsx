@@ -4,7 +4,7 @@ import { czasCalosci, formatujCzas } from "../src/czas";
 import { audioAktualne } from "../src/hash";
 import { scal } from "../src/scalanie";
 import { klatkiA4 } from "../src/a4/Film";
-import { api, BladKonfliktu, urlPliku, type Kontrola, type PozycjaPlanu, type StanPisania, type StanRenderu, type Status } from "./api";
+import { api, BladKonfliktu, urlPliku, type OpcjeNowego, type PlanSprzatania, type Kontrola, type PozycjaPlanu, type StanPisania, type StanRenderu, type Status } from "./api";
 import { domyslnyEkran, EdytorSceny } from "./EdytorSceny";
 import { Podglad } from "./Podglad";
 import { Ustawienia } from "./Ustawienia";
@@ -16,6 +16,8 @@ import { AlertTriangle, AudioLines, Check, ChevronLeft, ChevronRight, Clapperboa
 const NAZWY_STATUSOW = { scenariusz: "Scenariusz", lektor: "Lektor gotowy", gotowe: "Rolka gotowa" } as const;
 const NAZWY_STATUSOW_A4 = { scenariusz: "Czeka na nagranie", lektor: "Plan gotowy", gotowe: "Film gotowy" } as const;
 const nazwaStatusu = (p: Scenariusz) => (p.typ === "explainer" ? NAZWY_STATUSOW_A4 : NAZWY_STATUSOW)[p.status];
+/** Format bez zapisu w projekcie: rolki powstawały w pionie, explainery w poziomie. */
+const formatProjektu = (p: Scenariusz): "pion" | "poziom" => p.format ?? (p.typ === "explainer" ? "poziom" : "pion");
 const liczbaScen = (p: Scenariusz) => (p.typ === "explainer" ? (p.a4?.sceny.length ?? 0) : p.sceny.length);
 const I = { className: "ikona", strokeWidth: 1.75 } as const;
 
@@ -27,6 +29,7 @@ export const App: React.FC = () => {
   const [aktywnaScena, setAktywnaScena] = useState<string | undefined>();
   const [pokazUstawienia, setPokazUstawienia] = useState(false);
   const [pokazNowa, setPokazNowa] = useState(false);
+  const [pokazSprzatanie, setPokazSprzatanie] = useState(false);
   const [komunikat, setKomunikat] = useState<{ typ: "blad" | "info" | "ok"; tekst: string } | null>(null);
   const [zajete, setZajete] = useState(false);
   const [render, setRender] = useState<StanRenderu | null>(null);
@@ -331,7 +334,7 @@ export const App: React.FC = () => {
   const zaDlugo = aktywny ? czas > aktywny.docelowaDlugosc * 1.15 : false;
 
   return (
-    <div className={`uklad ${podgladZwiniety ? "podglad-zwiniety" : aktywny?.typ === "explainer" && widok === "edycja" ? "szeroki" : ""}`}>
+    <div className={`uklad ${podgladZwiniety ? "podglad-zwiniety" : aktywny && formatProjektu(aktywny) === "poziom" && widok === "edycja" ? "szeroki" : ""}`}>
       <aside className="panel lewy">
         <div className="logo">
           <span className="znaczek"><Clapperboard {...I} style={{ width: 13, height: 13 }} /></span>
@@ -343,6 +346,9 @@ export const App: React.FC = () => {
           </button>
           <button className={`btn nav-btn ${widok === "galeria" ? "" : "cichy"}`} onClick={() => setWidok("galeria")}>
             <Film {...I} /> Galeria
+          </button>
+          <button className="btn nav-btn cichy" onClick={() => setPokazSprzatanie(true)} title="Usuń starsze wersje, pliki robocze i kosz">
+            <Trash2 {...I} /> Posprzątaj maszynkę
           </button>
         </div>
         <div>
@@ -402,6 +408,10 @@ export const App: React.FC = () => {
                 <span className={`odznaka ${aktywny.status}`}>{nazwaStatusu(aktywny)}</span>
               </div>
               <div className="akcje">
+                <select className="wybor-formatu" value={formatProjektu(aktywny)} onChange={(e) => zmien({ ...aktywny, format: e.target.value as "pion" | "poziom" })} aria-label="Format" title="Format filmu">
+                  <option value="pion">Pion 9:16</option>
+                  <option value="poziom">Poziom 16:9</option>
+                </select>
                 <label className="przelacznik">
                   <input type="checkbox" checked={aktywny.napisy} onChange={(e) => zmien({ ...aktywny, napisy: e.target.checked })} /> Napisy
                 </label>
@@ -486,6 +496,10 @@ export const App: React.FC = () => {
                   <input type="number" min={5} max={300} step={5} value={aktywny.docelowaDlugosc} onChange={(e) => zmien({ ...aktywny, docelowaDlugosc: Math.max(5, Math.min(300, Number(e.target.value) || 0)) })} aria-label="Docelowa długość w sekundach" />
                   <span className="male">s</span>
                 </label>
+                <select className="wybor-formatu" value={formatProjektu(aktywny)} onChange={(e) => zmien({ ...aktywny, format: e.target.value as "pion" | "poziom" })} aria-label="Format" title="Format filmu">
+                  <option value="pion">Pion 9:16</option>
+                  <option value="poziom">Poziom 16:9</option>
+                </select>
                 <label className="przelacznik">
                   <input type="checkbox" checked={aktywny.napisy} onChange={(e) => zmien({ ...aktywny, napisy: e.target.checked })} /> Napisy
                 </label>
@@ -505,11 +519,11 @@ export const App: React.FC = () => {
                     <Mic {...I} /> Wróć do ElevenLabs
                   </button>
                 ) : (
-                  <button className="btn" disabled={zajete || !aktywny.sceny.length} onClick={() => wykonaj(() => api.lektorWszystkich(aktywny.id), "Lektor wygenerowany.")}>
+                  <button className={`btn ${aktywny.glos === "nagranie" ? "cichy" : ""}`} disabled={zajete || !aktywny.sceny.length} onClick={() => wykonaj(() => api.lektorWszystkich(aktywny.id), "Lektor wygenerowany.")} title={aktywny.glos === "nagranie" ? "Ten film miał mieć Twój głos. Lektor AI zastąpi nagranie." : ""}>
                     {brakLektora ? <Mic {...I} /> : <Check {...I} />} {brakLektora ? "Generuj lektora" : "Lektor aktualny"}
                   </button>
                 )}
-                <label className={`btn ${zajete || !aktywny.sceny.length ? "wylaczony" : ""}`} title="Wgraj plik z Twoim głosem (m4a, mp3, wav). Maszynka potnie go na sceny.">
+                <label className={`btn ${aktywny.glos === "nagranie" && !maNagranie ? "glowny" : ""} ${zajete || !aktywny.sceny.length ? "wylaczony" : ""}`} title="Wgraj plik z Twoim głosem (m4a, mp3, wav). Maszynka potnie go na sceny.">
                   <Upload {...I} /> {maNagranie ? "Wgraj nagranie ponownie" : "Wgraj nagranie"}
                   <input
                     type="file"
@@ -690,20 +704,91 @@ export const App: React.FC = () => {
         )}
       </aside>
 
+      {pokazSprzatanie && <Sprzatanie onZamknij={() => { setPokazSprzatanie(false); setLicznikGalerii((n) => n + 1); void odswiezListe(); }} />}
       {pokazUstawienia && status && <Ustawienia status={status} onZamknij={() => setPokazUstawienia(false)} onZapisano={odswiezStatus} />}
       {pokazNowa && (
         <NowaRolka
           onZamknij={() => setPokazNowa(false)}
-          onUtworz={async (tytul, zrodlo, dl, rekord, typ) => {
-            const p = await api.nowyProjekt(tytul, zrodlo, dl, rekord, typ);
+          onUtworz={async (tytul, zrodlo, dl, rekord, opcje) => {
+            const p = await api.nowyProjekt(tytul, zrodlo, dl, rekord, opcje);
             setPokazNowa(false);
             setWidok("edycja");
             await odswiezListe();
             await wczytaj(p.id);
-            if (zrodlo && typ !== "explainer") setPisanie(await api.napiszScenariusz(p.id, "nowy"));
+            if (zrodlo && opcje.typ !== "explainer") setPisanie(await api.napiszScenariusz(p.id, "nowy"));
           }}
         />
       )}
+    </div>
+  );
+};
+
+const mb = (b: number) => `${(b / 1024 / 1024).toFixed(b > 100 * 1024 * 1024 ? 0 : 1)} MB`;
+
+/** Podgląd i wykonanie sprzątania: najpierw lista z powodami, kasowanie dopiero po kliknięciu. */
+const Sprzatanie: React.FC<{ onZamknij: () => void }> = ({ onZamknij }) => {
+  const [plan, setPlan] = useState<PlanSprzatania | null>(null);
+  const [wynik, setWynik] = useState<PlanSprzatania | null>(null);
+  const [blad, setBlad] = useState<string | null>(null);
+  const [pracuje, setPracuje] = useState(false);
+  useEffect(() => {
+    api.planSprzatania().then(setPlan).catch((e) => setBlad((e as Error).message));
+  }, []);
+  const usun = async () => {
+    setPracuje(true);
+    try {
+      setWynik(await api.posprzataj());
+    } catch (e) {
+      setBlad((e as Error).message);
+    } finally {
+      setPracuje(false);
+    }
+  };
+  return (
+    <div className="dialog-tlo" onClick={onZamknij}>
+      <div className="karta dialog szeroki" onClick={(e) => e.stopPropagation()}>
+        <h1>Posprzątaj maszynkę</h1>
+        <p className="male">
+          Zostaje najnowsza wersja każdego filmu, Twoje nagrania i wszystko, czego maszynka potrzebuje do ponownego renderu. Znika reszta: starsze wersje, stare audio lektora, pliki robocze, podwójne kopie i kosz. Kasowanie jest
+          ostateczne.
+        </p>
+        {blad && <div className="komunikat blad">{blad}</div>}
+        {!plan && !blad && <p className="male">Liczę…</p>}
+        {wynik ? (
+          <div className={`komunikat ${wynik.bledy?.length ? "blad" : "ok"}`}>
+            Usunięte: {wynik.pozycje.length - (wynik.bledy?.length ?? 0)} pozycji, {mb(wynik.razem)} wolnego miejsca.
+            {wynik.bledy?.length ? ` Nie udało się: ${wynik.bledy.join("; ")}` : ""}
+          </div>
+        ) : (
+          plan && (
+            <>
+              {plan.pozycje.length === 0 ? (
+                <div className="komunikat ok">Czysto. Nie ma nic do usunięcia.</div>
+              ) : (
+                <div className="lista-sprzatania">
+                  {plan.pozycje.map((p) => (
+                    <div key={p.sciezka} className="wiersz-sprzatania">
+                      <span className="rozmiar">{mb(p.rozmiar)}</span>
+                      <span>
+                        {p.powod}
+                        <span className="male sciezka">{p.sciezka}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )
+        )}
+        <div className="stopka">
+          <button className="btn" onClick={onZamknij}>{wynik ? "Zamknij" : "Anuluj"}</button>
+          {!wynik && plan && plan.pozycje.length > 0 && (
+            <button className="btn glowny niebezpieczny" disabled={pracuje} onClick={usun}>
+              <Trash2 {...I} /> {pracuje ? "Usuwam…" : `Usuń na stałe (${mb(plan.razem)})`}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -743,13 +828,29 @@ const PanelKontroli: React.FC<{ kontrola: Kontrola | null; onPokazScene: (id: st
   );
 };
 
-const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zrodlo: string, dl: number, rekord?: string, typ?: "rolka" | "explainer") => Promise<void> }> = ({ onZamknij, onUtworz }) => {
-  const [typ, setTyp] = useState<"rolka" | "explainer">("rolka");
+/**
+ * Rodzaj filmu mówi, skąd biorą się obraz i głos. Format jest osobnym wyborem, bo każdy rodzaj
+ * da się zrobić i w pionie (Reels, Shorts), i w poziomie (YouTube) — decyzja Dariusza 17.10.2026.
+ */
+const RODZAJE = [
+  { id: "lektor", nazwa: "Animacje + lektor AI", opis: "Z linku albo pomysłu: Claude pisze scenariusz, klon głosu go czyta, obraz to animacje.", opcje: { typ: "rolka", glos: "lektor" } },
+  { id: "glos", nazwa: "Animacje + Twój głos", opis: "Claude pisze scenariusz, Ty go nagrywasz (dyktafon, telefon), maszynka dopasowuje animacje do Twojego głosu.", opcje: { typ: "rolka", glos: "nagranie" } },
+  { id: "kamera", nazwa: "Twarz + animacje", opis: "Mówisz do kamery, maszynka wycina pauzy i powtórki, a grafiki wchodzą na Twoje słowa.", opcje: { typ: "explainer" } },
+  { id: "ekran", nazwa: "Twarz + ekran + animacje", opis: "Dwa nagrania naraz: kamera i Zoom albo prezentacja. Maszynka zgrywa je po dźwięku i przełącza między nimi.", opcje: { typ: "explainer", zEkranem: true } },
+] as const;
+
+type RodzajId = (typeof RODZAJE)[number]["id"];
+
+const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zrodlo: string, dl: number, rekord: string | undefined, opcje: OpcjeNowego) => Promise<void> }> = ({ onZamknij, onUtworz }) => {
+  const [rodzaj, setRodzaj] = useState<RodzajId>("lektor");
+  const [format, setFormat] = useState<"pion" | "poziom">("pion");
   const [tytul, setTytul] = useState("");
   const [zrodlo, setZrodlo] = useState("");
   const [dl, setDl] = useState(45);
   const [plan, setPlan] = useState<PozycjaPlanu[]>([]);
   const [wybrana, setWybrana] = useState<string | null>(null);
+  const wybrany = RODZAJE.find((r) => r.id === rodzaj)!;
+  const zKamery = wybrany.opcje.typ === "explainer";
 
   // Plan social media z sejfu: pozycje z „rolka: Do nagrania”. Gdy sejfu nie ma, sekcja znika.
   useEffect(() => {
@@ -765,81 +866,81 @@ const NowaRolka: React.FC<{ onZamknij: () => void; onUtworz: (tytul: string, zro
     setTytul(p.tytul.replace(/\s*\(rolka\)\s*$/i, "").trim());
     setZrodlo(p.tresc);
     if (p.dlugosc) setDl(p.dlugosc);
+    if (p.audio) setRodzaj("glos");
   };
+
+  const utworz = () => onUtworz(tytul.trim(), zKamery ? "" : zrodlo.trim(), zKamery ? 0 : dl, zKamery ? undefined : (wybrana ?? undefined), { ...wybrany.opcje, format });
 
   return (
     <div className="dialog-tlo" onClick={onZamknij}>
-      <div className="karta dialog" onClick={(e) => e.stopPropagation()}>
-        <h1>{typ === "explainer" ? "Nowy explainer" : "Nowa rolka"}</h1>
-        <div className="skroty" style={{ margin: "10px 0 12px" }}>
-          <button className={`btn maly ${typ === "rolka" ? "" : "cichy"}`} onClick={() => setTyp("rolka")}>Rolka bez twarzy (z tekstu)</button>
-          <button className={`btn maly ${typ === "explainer" ? "" : "cichy"}`} onClick={() => setTyp("explainer")}>Explainer z nagrania kamery</button>
-        </div>
-        {typ === "explainer" ? (
-          <>
-            <p className="male">Mówisz do kamery, maszynka robi resztę: wycina pauzy i powtórki, planuje grafiki pod każde zdanie i składa film 16:9 z Twoją twarzą, animacjami, napisami i podkładem. Nagranie wgrasz w następnym kroku.</p>
-            <div className="pole">
-              <label>Tytuł roboczy</label>
-              <input value={tytul} onChange={(e) => setTytul(e.target.value)} placeholder="np. Jak zbudować kontekst dla Claude" autoFocus />
-            </div>
-            <div className="stopka">
-              <button className="btn" onClick={onZamknij}>Anuluj</button>
-              <button className="btn glowny" disabled={!tytul.trim()} onClick={() => onUtworz(tytul.trim(), "", 0, undefined, "explainer")}>Utwórz explainer</button>
-            </div>
-          </>
-        ) : (
-        <>
-        <p className="male">Wklej link do artykułu albo opisz pomysł. Claude sam napisze scenariusz na wybraną długość, a Ty go poprawisz.</p>
-        {plan.length > 0 && (
-          <div className="pole">
-            <label>Z planu social media — czeka na nagranie</label>
-            <div className="plan-lista">
-              {plan.map((p) => (
-                <button
-                  key={p.id}
-                  className={`plan-pozycja ${wybrana === p.id ? "wybrana" : ""}`}
-                  onClick={() => wezZPlanu(p)}
-                >
-                  <span className="plan-tytul">{p.tytul.replace(/\s*\(rolka\)\s*$/i, "")}</span>
-                  <span className="plan-meta">
-                    {[p.filar, p.status, p.dlugosc ? `${p.dlugosc} s` : null, p.audio ? "🎙 nagranie w rekordzie" : null].filter(Boolean).join(" · ")}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <p className="male">Kliknięcie wciąga treść pozycji jako źródło scenariusza.</p>
-          </div>
-        )}
-        <div className="pole">
-          <label>Tytuł roboczy</label>
-          <input value={tytul} onChange={(e) => setTytul(e.target.value)} placeholder="np. 3 błędy w automatyzacjach" autoFocus />
-        </div>
-        <div className="pole">
-          <label>Link do artykułu albo pomysł na rolkę</label>
-          <textarea value={zrodlo} onChange={(e) => setZrodlo(e.target.value)} placeholder="https://dariuszmlynarski.pl/... albo: 3 błędy, które robi każdy w n8n" />
-        </div>
-        <div className="pole">
-          <label>Docelowa długość</label>
-          <div className="skroty">
-            <label className="pole-liczbowe">
-              <input type="number" min={5} max={300} step={5} value={dl} onChange={(e) => setDl(Number(e.target.value) || 0)} />
-              <span className="male">s</span>
-            </label>
-            {[15, 30, 45, 60, 90].map((s) => (
-              <button key={s} className={`btn maly ${dl === s ? "" : "cichy"}`} onClick={() => setDl(s)}>
-                {s}
+      <div className="karta dialog szeroki" onClick={(e) => e.stopPropagation()}>
+        <h1>Nowy film</h1>
+        <div className="pole" style={{ marginTop: 12 }}>
+          <label>Rodzaj filmu</label>
+          <div className="wybor-rodzaju">
+            {RODZAJE.map((r) => (
+              <button key={r.id} className={`kafel-wyboru ${rodzaj === r.id ? "wybrany" : ""}`} onClick={() => setRodzaj(r.id)}>
+                <strong>{r.nazwa}</strong>
+                <span className="male">{r.opis}</span>
               </button>
             ))}
           </div>
         </div>
+        <div className="pole">
+          <label>Format</label>
+          <div className="skroty">
+            <button className={`btn maly ${format === "pion" ? "" : "cichy"}`} onClick={() => setFormat("pion")}>Pion 9:16 · Reels, Shorts, TikTok</button>
+            <button className={`btn maly ${format === "poziom" ? "" : "cichy"}`} onClick={() => setFormat("poziom")}>Poziom 16:9 · YouTube</button>
+          </div>
+        </div>
+        <div className="pole">
+          <label>Tytuł roboczy</label>
+          <input value={tytul} onChange={(e) => setTytul(e.target.value)} placeholder={zKamery ? "np. Jak zbudować kontekst dla Claude" : "np. 3 błędy w automatyzacjach"} autoFocus />
+        </div>
+        {zKamery ? (
+          <p className="male">Długość wynika z nagrania. {rodzaj === "ekran" ? "Oba nagrania" : "Nagranie"} wgrasz w następnym kroku.</p>
+        ) : (
+          <>
+            {plan.length > 0 && (
+              <div className="pole">
+                <label>Z planu social media — czeka na nagranie</label>
+                <div className="plan-lista">
+                  {plan.map((p) => (
+                    <button key={p.id} className={`plan-pozycja ${wybrana === p.id ? "wybrana" : ""}`} onClick={() => wezZPlanu(p)}>
+                      <span className="plan-tytul">{p.tytul.replace(/\s*\(rolka\)\s*$/i, "")}</span>
+                      <span className="plan-meta">{[p.filar, p.status, p.dlugosc ? `${p.dlugosc} s` : null, p.audio ? "🎙 nagranie w rekordzie" : null].filter(Boolean).join(" · ")}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="male">Kliknięcie wciąga treść pozycji jako źródło scenariusza.</p>
+              </div>
+            )}
+            <div className="pole">
+              <label>Link do artykułu albo pomysł</label>
+              <textarea value={zrodlo} onChange={(e) => setZrodlo(e.target.value)} placeholder="https://dariuszmlynarski.pl/... albo: 3 błędy, które robi każdy w n8n" />
+            </div>
+            <div className="pole">
+              <label>Docelowa długość</label>
+              <div className="skroty">
+                <label className="pole-liczbowe">
+                  <input type="number" min={5} max={600} step={5} value={dl} onChange={(e) => setDl(Number(e.target.value) || 0)} />
+                  <span className="male">s</span>
+                </label>
+                {(format === "pion" ? [15, 30, 45, 60, 90] : [60, 120, 180, 300]).map((s) => (
+                  <button key={s} className={`btn maly ${dl === s ? "" : "cichy"}`} onClick={() => setDl(s)}>
+                    {s < 120 ? `${s} s` : `${s / 60} min`}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
         <div className="stopka">
           <button className="btn" onClick={onZamknij}>Anuluj</button>
-          <button className="btn glowny" disabled={!tytul.trim() || dl < 5} onClick={() => onUtworz(tytul.trim(), zrodlo.trim(), dl, wybrana ?? undefined)}>
-            {zrodlo.trim() ? <><Sparkles {...I} /> Utwórz i napisz scenariusz</> : "Utwórz pustą rolkę"}
+          <button className="btn glowny" disabled={!tytul.trim() || (!zKamery && dl < 5)} onClick={utworz}>
+            {!zKamery && zrodlo.trim() ? <><Sparkles {...I} /> Utwórz i napisz scenariusz</> : "Utwórz film"}
           </button>
         </div>
-        </>
-        )}
       </div>
     </div>
   );

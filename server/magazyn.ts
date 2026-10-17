@@ -144,7 +144,10 @@ export function zapiszScalajac(baza: Scenariusz, nowy: Scenariusz): Scenariusz {
 
 export const kopia = <T>(v: T): T => structuredClone(v);
 
-export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 45, rekord?: string, typ: Scenariusz["typ"] = "rolka"): Scenariusz {
+export type OpcjeNowego = { typ?: Scenariusz["typ"]; format?: Scenariusz["format"]; glos?: Scenariusz["glos"]; zEkranem?: boolean };
+
+export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 45, rekord?: string, opcje: OpcjeNowego = {}): Scenariusz {
+  const typ = opcje.typ ?? "rolka";
   let id = slug(tytul);
   let n = 2;
   while (fs.existsSync(katalogProjektu(id))) id = `${slug(tytul)}-${n++}`;
@@ -160,7 +163,8 @@ export function utworzProjekt(tytul: string, zrodlo?: string, docelowaDlugosc = 
     zmieniono: teraz,
     napisy: true,
     sceny: [],
-    ...(typ === "explainer" ? { typ, a4: { sceny: [], swisty: true } } : {}),
+    format: opcje.format ?? (typ === "explainer" ? "poziom" : "pion"),
+    ...(typ === "explainer" ? { typ, a4: { sceny: [], swisty: true, ...(opcje.zEkranem ? { zEkranem: true } : {}) } } : opcje.glos === "nagranie" ? { glos: "nagranie" as const } : {}),
   });
 }
 

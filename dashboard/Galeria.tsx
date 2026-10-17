@@ -41,7 +41,7 @@ export const Galeria: React.FC<Props> = ({ projektId, onOtworzProjekt, odswiez }
     return (
       <div className="pusty">
         <div className="ikona-duza"><Film {...I} style={{ width: 20, height: 20 }} /></div>
-        {projektId ? "Ta rolka nie ma jeszcze wygenerowanego MP4." : "Nie ma jeszcze żadnych wygenerowanych rolek. Kliknij „Renderuj MP4” przy dowolnej rolce."}
+        {projektId ? "Ten film nie ma jeszcze wygenerowanego MP4." : "Nie ma jeszcze żadnych wygenerowanych filmów. Kliknij „Renderuj” przy dowolnym filmie."}
       </div>
     );
 
@@ -71,7 +71,7 @@ export const Galeria: React.FC<Props> = ({ projektId, onOtworzProjekt, odswiez }
                 title="Usuń plik"
                 aria-label="Usuń plik"
                 onClick={async () => {
-                  if (!confirm(`Usunąć plik ${w.plik}? Trafi do folderu _kosz.`)) return;
+                  if (!confirm(`Usunąć na stałe ${w.plik}? Tego nie da się cofnąć.`)) return;
                   await api.usunRolke(w.projektId, w.plik);
                   void wczytaj();
                 }}

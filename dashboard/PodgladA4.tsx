@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
 import type { Scenariusz } from "../src/typy";
 import { FilmA4, klatkiA4 } from "../src/a4/Film";
-import { A4_FPS, A4_SZER, A4_WYS } from "../src/a4/typy";
+import { A4_FPS, wymiaryA4 } from "../src/a4/typy";
 import { SERWER } from "./api";
 
 /** Podgląd explainera 16:9 na żywo: to samo, co wyjdzie z renderu, bez renderowania. */
@@ -20,15 +20,15 @@ export const PodgladA4: React.FC<{ projekt: Scenariusz; aktywnaScena?: string }>
   }, [aktywnaScena]);
 
   return (
-    <div className="podglad-ramka poziomy">
+    <div className={`podglad-ramka ${projekt.format === "pion" ? "" : "poziomy"}`}>
       <Player
         ref={ref}
         component={FilmA4}
         inputProps={props}
         durationInFrames={klatki}
         fps={A4_FPS}
-        compositionWidth={A4_SZER}
-        compositionHeight={A4_WYS}
+        compositionWidth={wymiaryA4(projekt.format).szer}
+        compositionHeight={wymiaryA4(projekt.format).wys}
         style={{ width: "100%", height: "100%" }}
         controls
         clickToPlay

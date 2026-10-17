@@ -51,11 +51,24 @@ Każdy render tworzy osobny plik z datą i godziną w nazwie, np. `rolka_2026-09
 Przycisk **Galeria** (lewy panel) pokazuje wszystkie wygenerowane MP4 ze wszystkich rolek. Odtwarzasz je bezpośrednio w dashboardzie. Kliknięcie tytułu wraca do edycji tej rolki.
 W edycji rolki zakładka **Wygenerowane wersje** pokazuje wszystkie wersje tylko tej jednej rolki.
 
+## Nowy film: rodzaj i format
+
+Przycisk **+ Nowy film** pyta o dwie rzeczy osobno:
+
+- **Rodzaj**, czyli skąd bierze się obraz i głos: animacje z lektorem AI, animacje z Twoim głosem, Twoja twarz z animacjami albo twarz z nagraniem ekranu (Zoom, prezentacja) i animacjami.
+- **Format**: pion 9:16 na Reels, Shorts i TikToka albo poziom 16:9 na YouTube. Każdy rodzaj działa w obu formatach, a format zmienisz też później, z listy obok tytułu filmu.
+
+Długość podajesz tylko przy animacjach, bo wtedy Claude pisze scenariusz. Przy nagraniu z kamery długość wynika z nagrania.
+
+## Posprzątaj maszynkę
+
+Przycisk w lewym panelu pokazuje listę rzeczy do usunięcia, każdą z powodem i rozmiarem: starsze wersje filmów (zostaje najnowsza), stare audio lektora, pliki robocze, podwójne kopie i kosz. Twoje nagrania i wszystko, czego maszynka potrzebuje do ponownego renderu, zostaje. Kasowanie jest ostateczne, bez kosza. Pojedynczą wersję w zakładce „Wygenerowane wersje” też usuwasz od razu na stałe.
+
 ## Explainer z nagrania kamery
 
 Gdy tłumaczysz temat do kamery, a obraz ma to pokazywać animacjami.
 
-1. Kliknij „Nowy film”, wybierz „Explainer z nagrania kamery”, wpisz tytuł.
+1. Kliknij „Nowy film”, wybierz „Twarz + animacje” (albo „Twarz + ekran + animacje”), format i tytuł.
 2. Kliknij „Wgraj nagranie z kamery” albo wpisz ścieżkę do pliku na dysku i kliknij „Weź z dysku”. Przy dużych plikach ścieżka jest szybsza.
 3. Poczekaj. Maszynka spisuje, co mówisz, wycina pauzy, „yyy” i powtórzone podejścia, a potem planuje obraz do każdego zdania. Minuta nagrania to mniej więcej minuta czekania.
 4. Przejrzyj plan scen. Przy każdej scenie widzisz, co mówisz, układ kadru i opis tego, co widać. Zmień układ z listy, popraw opis i kliknij „Przebuduj według opisu” albo rozwiń „Klocki” i popraw tekst wprost.

@@ -77,6 +77,10 @@ export type PozycjaPlanu = {
 
 export type WynikNagrania = { projekt: Scenariusz; raport: string };
 
+export type PlanSprzatania = { pozycje: { sciezka: string; powod: string; rozmiar: number }[]; razem: number; bledy?: string[] };
+
+export type OpcjeNowego = { typ: "rolka" | "explainer"; format: "pion" | "poziom"; glos?: "lektor" | "nagranie"; zEkranem?: boolean };
+
 export type StanA4 = { stan: "brak" | "pracuje" | "gotowe" | "blad"; etap?: string; komunikat?: string };
 
 export const api = {
@@ -89,8 +93,10 @@ export const api = {
 
   projekty: () => zapytaj<Scenariusz[]>("/api/projekty"),
   projekt: (id: string) => zapytaj<Scenariusz>(`/api/projekty/${id}`),
-  nowyProjekt: (tytul: string, zrodlo?: string, docelowaDlugosc?: number, rekord?: string, typ?: "rolka" | "explainer") =>
-    zapytaj<Scenariusz>("/api/projekty", { method: "POST", body: JSON.stringify({ tytul, zrodlo, docelowaDlugosc, rekord, typ }) }),
+  nowyProjekt: (tytul: string, zrodlo: string | undefined, docelowaDlugosc: number | undefined, rekord: string | undefined, opcje: OpcjeNowego) =>
+    zapytaj<Scenariusz>("/api/projekty", { method: "POST", body: JSON.stringify({ tytul, zrodlo, docelowaDlugosc, rekord, ...opcje }) }),
+  planSprzatania: () => zapytaj<PlanSprzatania>("/api/sprzatanie"),
+  posprzataj: () => zapytaj<PlanSprzatania>("/api/sprzatanie", { method: "POST", body: "{}" }),
   zapiszProjekt: (s: Scenariusz) => zapytaj<Scenariusz>(`/api/projekty/${s.id}`, { method: "PUT", body: JSON.stringify(s) }),
   usunProjekt: (id: string) => zapytaj<{ ok: true }>(`/api/projekty/${id}`, { method: "DELETE" }),
   otworzFolder: (id: string) => zapytaj<{ ok: true }>(`/api/projekty/${id}/otworz-folder`, { method: "POST" }),

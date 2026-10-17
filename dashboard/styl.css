@@ -289,3 +289,18 @@ h2 { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
 .klocek-naglowek select { border: 1px solid var(--line-strong); border-radius: var(--r-control); padding: 4px 8px; font-weight: 600; background: var(--card); }
 .klocek-naglowek .wejscie-slowo { flex: 1; border: 1px solid var(--line); border-radius: var(--r-control); padding: 4px 8px; background: var(--card); font-size: 12px; }
 @media (max-width: 1400px) { .uklad.szeroki { grid-template-columns: 220px minmax(0, 1fr) 440px; } }
+
+/* Nowy film: rodzaj i format */
+.dialog.szeroki { max-width: 720px; width: 100%; }
+.wybor-rodzaju { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kafel-wyboru { text-align: left; display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: var(--r-card); background: var(--card); cursor: pointer; }
+.kafel-wyboru:hover { border-color: var(--accent); }
+.kafel-wyboru.wybrany { border-color: var(--accent); box-shadow: var(--focus); background: var(--accent-soft); }
+.wybor-formatu { border: 1px solid var(--line-strong); border-radius: var(--r-control); padding: 6px 8px; background: var(--card); }
+/* Sprzątanie */
+.lista-sprzatania { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: var(--r-control); margin: 10px 0; }
+.wiersz-sprzatania { display: grid; grid-template-columns: 80px 1fr; gap: 10px; padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+.wiersz-sprzatania:last-child { border-bottom: 0; }
+.wiersz-sprzatania .rozmiar { font-variant-numeric: tabular-nums; color: var(--ink-soft); text-align: right; }
+.wiersz-sprzatania .sciezka { display: block; font-size: 11px; word-break: break-all; }
+.btn.glowny.niebezpieczny { background: var(--red); border-color: var(--red); color: #fff; }

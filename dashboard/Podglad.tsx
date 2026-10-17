@@ -3,7 +3,7 @@ import { Player, type PlayerRef } from "@remotion/player";
 import type { Scenariusz } from "../src/typy";
 import { Short } from "../src/Short";
 import { FPS, klatkiCalosci, klatkiSceny, maPrzejscie, PRZEJSCIE_KLATKI } from "../src/czas";
-import { SZEROKOSC, WYSOKOSC } from "../src/marka";
+import { kadrFormatu } from "../src/kadr";
 import { SERWER } from "./api";
 
 type Props = { scenariusz: Scenariusz; aktywnaScena?: string };
@@ -32,15 +32,15 @@ export const Podglad: React.FC<Props> = ({ scenariusz, aktywnaScena }) => {
   }, [aktywnaScena]);
 
   return (
-    <div className="podglad-ramka">
+    <div className={`podglad-ramka ${scenariusz.format === "poziom" ? "poziomy" : ""}`}>
       <Player
         ref={ref}
         component={Short}
         inputProps={props}
         durationInFrames={klatki}
         fps={FPS}
-        compositionWidth={SZEROKOSC}
-        compositionHeight={WYSOKOSC}
+        compositionWidth={kadrFormatu(scenariusz.format).szer}
+        compositionHeight={kadrFormatu(scenariusz.format).wys}
         style={{ width: "100%", height: "100%" }}
         controls
         clickToPlay

@@ -30,6 +30,7 @@ import { odswiezPaczke, renderuj, stanRenderu, trwaRender } from "./render";
 import { napiszScenariusz, poprawScene, stanPisania, trwaPisanie } from "./scenarzysta";
 import { podsumowanie } from "./kontrola";
 import { audioRekordu, rolkiDoNagrania, sejfDostepny } from "./plan";
+import { planSprzatania, posprzataj } from "./sprzatanie";
 import { generujMuzyke, przebudujScene, przetworz, przyjmijWideo, stanA4, trwaA4, zsynchronizuj, type RodzajWideo } from "./a4";
 
 const PORT = Number(process.env.PORT ?? 4545);
@@ -103,9 +104,16 @@ app.get("/api/plan", (_req, res) => {
 app.get("/api/projekty", (_req, res) => res.json(listaProjektow()));
 
 app.post("/api/projekty", (req, res) => {
-  const { tytul, zrodlo, docelowaDlugosc, rekord, typ } = req.body ?? {};
-  if (!tytul || typeof tytul !== "string") return blad(res, new Error("Podaj tytuł rolki."), 400);
-  res.json(utworzProjekt(tytul, zrodlo, Number(docelowaDlugosc) || 45, typeof rekord === "string" && rekord ? rekord : undefined, typ === "explainer" ? "explainer" : "rolka"));
+  const { tytul, zrodlo, docelowaDlugosc, rekord, typ, format, glos, zEkranem } = req.body ?? {};
+  if (!tytul || typeof tytul !== "string") return blad(res, new Error("Podaj tytuł filmu."), 400);
+  res.json(
+    utworzProjekt(tytul, zrodlo, Number(docelowaDlugosc) || 45, typeof rekord === "string" && rekord ? rekord : undefined, {
+      typ: typ === "explainer" ? "explainer" : "rolka",
+      format: format === "pion" || format === "poziom" ? format : undefined,
+      glos: glos === "nagranie" ? "nagranie" : undefined,
+      zEkranem: zEkranem === true,
+    }),
+  );
 });
 
 app.get("/api/projekty/:id", (req, res) => {
@@ -212,10 +220,18 @@ app.delete("/api/projekty/:id/rolki/:plik", (req, res) => {
   if (!POPRAWNY_MP4.test(plik)) return blad(res, new Error("Nieprawidłowa nazwa pliku."), 400);
   const sciezka = path.join(katalogProjektu(req.params.id), plik);
   if (!fs.existsSync(sciezka)) return blad(res, new Error("Nie ma takiego pliku."), 404);
-  const kosz = path.join(KATALOG_PROJEKTOW, "_kosz");
-  fs.mkdirSync(kosz, { recursive: true });
-  fs.renameSync(sciezka, path.join(kosz, `${req.params.id}-${plik}`));
+  // Wersje filmu kasujemy od razu, bez kosza: to setki megabajtów, a decyzja zapada przy podglądzie (17.10.2026).
+  fs.rmSync(sciezka, { force: true });
   res.json({ ok: true });
+});
+
+// ---- Sprzątanie maszynki ----
+app.get("/api/sprzatanie", (_req, res) => res.json(planSprzatania()));
+
+app.post("/api/sprzatanie", (_req, res) => {
+  const zajete = listaProjektow().filter((p) => trwaRender(p.id) || trwaA4(p.id));
+  if (zajete.length) return blad(res, new Error(`Trwa praca przy: ${zajete.map((p) => p.tytul).join(", ")}. Posprzątam, jak skończy.`), 409);
+  res.json(posprzataj());
 });
 
 // ---- Lektor ----
