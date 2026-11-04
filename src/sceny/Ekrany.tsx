@@ -9,7 +9,7 @@ import { useVideoConfig as useConfig } from "remotion";
 
 type Ek<T extends Ekran["typ"]> = Extract<Ekran, { typ: T }>;
 
-/** Duży nagłówek marki: Archivo Black, wersaliki, ciasny interlinia. */
+/** Duży nagłówek marki: Schibsted Grotesk Black, wersaliki, ciasny interlinia. */
 export const NaglowekDuzy: React.FC<{ tekst: string; akcent?: string; opoznienie?: number; rozmiar?: number }> = ({
   tekst,
   akcent,

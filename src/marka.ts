@@ -1,23 +1,24 @@
 // Styl marki Dariusza Młynarskiego przełożony na kadr pionowy.
 // Źródło: 3-DM/Content/Brand/Identyfikacja-Wizualna.md — ciemne tło, pomarańcz #fc5400,
-// Archivo Black w nagłówkach, Inter w treści, Montserrat w napisach na wideo.
-import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
-import { loadFont as loadArchivo } from "@remotion/google-fonts/ArchivoBlack";
+// Schibsted Grotesk Black w nagłówkach, Figtree w treści (od 05.11.2026), Montserrat w napisach na wideo.
+import { loadFont as loadFigtree } from "@remotion/google-fonts/Figtree";
+import { loadFont as loadSchibsted } from "@remotion/google-fonts/SchibstedGrotesk";
 import { loadFont as loadMontserrat } from "@remotion/google-fonts/Montserrat";
 
-const inter = loadInter("normal", {
+const figtree = loadFigtree("normal", {
   weights: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
 });
-const archivo = loadArchivo("normal", { weights: ["400"], subsets: ["latin", "latin-ext"] });
+// Tylko Black: nagłówki bez podanej grubości też dostają 900, jak dawniej jedyną grubość Archivo Black.
+const schibsted = loadSchibsted("normal", { weights: ["900"], subsets: ["latin", "latin-ext"] });
 const montserrat = loadMontserrat("normal", {
   weights: ["600", "700", "800"],
   subsets: ["latin", "latin-ext"],
 });
 
 export const CZCIONKA = {
-  tekst: inter.fontFamily,
-  naglowek: archivo.fontFamily,
+  tekst: figtree.fontFamily,
+  naglowek: schibsted.fontFamily,
   /** Dopiski i etykiety. U DM nie ma odręcznego kroju — tech/flat, nie notatnik. */
   odreczna: montserrat.fontFamily,
   /** Napisy na wideo zostają na Montserracie (decyzja 01.09.2026). */

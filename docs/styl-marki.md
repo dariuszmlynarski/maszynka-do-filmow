@@ -30,13 +30,13 @@ Zieleń marki to `#1a5c2a`, ale na ciemnym tle znika, więc w kadrze używamy ja
 
 | Zastosowanie | Font |
 |---|---|
-| Nagłówki scen | **Archivo Black** |
-| Treść, etykiety, kafelki | **Inter** (600–800) |
+| Nagłówki scen | **Schibsted Grotesk Black** (od 05.11.2026, wcześniej Archivo Black) |
+| Treść, etykiety, kafelki | **Figtree** (600–800, od 05.11.2026, wcześniej Inter) |
 | Napisy na wideo | **Montserrat** |
 | Dopiski i drobne etykiety | Montserrat |
 | Kod i terminal | Menlo / SF Mono |
 
-🔴 **Montserrat zostaje przy napisach na wideo** (decyzja 01.09.2026). Nagłówki na ekranie to grafika, nie napisy — tam idzie Archivo Black, tak jak na grafikach social.
+🔴 **Montserrat zostaje przy napisach na wideo** (decyzja 01.09.2026). Nagłówki na ekranie to grafika, nie napisy — tam idzie Schibsted Grotesk Black, tak jak na grafikach social.
 
 Odręcznego kroju (Caveat w oryginale) nie używamy — estetyka DM jest techniczna i płaska, nie notatnikowa.
 
