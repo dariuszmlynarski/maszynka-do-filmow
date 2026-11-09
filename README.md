@@ -55,7 +55,7 @@ Dashboard `5757`, serwer `4545`. Zmiana portu serwera: `PORT` w pliku `.env` (wz
 
 Cała warstwa wizualna siedzi w `src/marka.ts` (paleta, czcionki, cienie, podpis, domena) i `docs/styl-marki.md`. Ton głosu lektora żyje w **dwóch miejscach naraz**: `CLAUDE.md` oraz funkcja `zasady()` w `server/scenarzysta.ts` — zmieniasz jedno, zmieniasz drugie.
 
-Źródłem prawdy dla marki jest sejf dmOS: `3-DM/Content/Brand/Identyfikacja-Wizualna.md` i `Tone-of-Voice-Essentials.md`.
+Źródłem prawdy dla marki jest sejf dmOS: `3-DM/About/Branding/Identyfikacja-Wizualna.md` i `Tone-of-Voice-Essentials.md`.
 
 ---
 

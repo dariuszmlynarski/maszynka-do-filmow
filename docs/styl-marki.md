@@ -1,6 +1,6 @@
 # Styl marki — Dariusz Młynarski / DMProsper
 
-> Źródło prawdy: `3-DM/Content/Brand/Identyfikacja-Wizualna.md` w sejfie dmOS.
+> Źródło prawdy: `3-DM/About/Branding/Identyfikacja-Wizualna.md` w sejfie dmOS.
 > Ten plik jest przełożeniem tamtych reguł na kadr pionowy. Gdy się rozjadą, wygrywa sejf.
 
 ## Kolory

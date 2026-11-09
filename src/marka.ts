@@ -1,5 +1,5 @@
 // Styl marki Dariusza Młynarskiego przełożony na kadr pionowy.
-// Źródło: 3-DM/Content/Brand/Identyfikacja-Wizualna.md — ciemne tło, pomarańcz #fc5400,
+// Źródło: 3-DM/About/Branding/Identyfikacja-Wizualna.md — ciemne tło, pomarańcz #fc5400,
 // Schibsted Grotesk Black w nagłówkach, Figtree w treści (od 05.11.2026), Montserrat w napisach na wideo.
 import { loadFont as loadFigtree } from "@remotion/google-fonts/Figtree";
 import { loadFont as loadSchibsted } from "@remotion/google-fonts/SchibstedGrotesk";

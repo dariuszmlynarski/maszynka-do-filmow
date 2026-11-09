@@ -6,7 +6,7 @@ To jest **ścieżka A3 fabryki wideo DM** — rolka bez twarzy, złożona z anim
 
 Właściciel jest osobą nietechniczną. Pisz krótko, po polsku, bez żargonu. Nie tłumacz, jak działa kod, chyba że poprosi.
 
-🔴 Marka jest źródłem zewnętrznym: `3-DM/Content/Brand/Identyfikacja-Wizualna.md` i `Tone-of-Voice-Essentials.md` w sejfie dmOS. Gdy reguła z sejfu kłóci się z tym plikiem, wygrywa sejf — a ten plik poprawiasz.
+🔴 Marka jest źródłem zewnętrznym: `3-DM/About/Branding/Identyfikacja-Wizualna.md` i `Tone-of-Voice-Essentials.md` w sejfie dmOS. Gdy reguła z sejfu kłóci się z tym plikiem, wygrywa sejf — a ten plik poprawiasz.
 
 ## Co tu jest
 
