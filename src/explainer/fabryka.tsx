@@ -39,7 +39,10 @@ export const useSpr = (t0: number, damping = 14) => {
   return spring({ frame: f - Math.round(t0 * FPS), fps: FPS, config: { damping, stiffness: 120 } });
 };
 
-export function zrobFilm(os: Os) {
+/** Kolory napisów karaoke: tło paska i kolor słów już wypowiedzianych. Domyślnie CNW. */
+export type StylNapisow = { tlo: string; akcent: string };
+
+export function zrobFilm(os: Os, styl: StylNapisow = { tlo: "rgba(14,36,18,.88)", akcent: "#7EE08A" }) {
   const SC = os.sceny;
   const norm = (s: string) => s.toLowerCase().replace(/[^\p{L}\d-]/gu, "");
   /** Globalny czas (s), w którym w scenie pada słowo zaczynające się od `rdzen` (`ktore` = które wystąpienie). */
@@ -93,9 +96,9 @@ export function zrobFilm(os: Os) {
     if (t > l.do + 0.8) return null;
     return (
       <div style={{ position: "absolute", left: 120, right: 520, bottom: 64, display: "flex" }}>
-        <div style={{ background: "rgba(14,36,18,.88)", borderRadius: 16, padding: "14px 24px", fontFamily: CZCIONKA.napisy, fontWeight: 700, fontSize: 36, lineHeight: 1.25, color: "#fff" }}>
+        <div style={{ background: styl.tlo, borderRadius: 16, padding: "14px 24px", fontFamily: CZCIONKA.napisy, fontWeight: 700, fontSize: 36, lineHeight: 1.25, color: "#fff" }}>
           {l.slowa.map((w, j) => (
-            <span key={j} style={{ color: t >= w.start ? "#7EE08A" : "#FFFFFF" }}>{w.tekst} </span>
+            <span key={j} style={{ color: t >= w.start ? styl.akcent : "#FFFFFF" }}>{w.tekst} </span>
           ))}
         </div>
       </div>
@@ -105,29 +108,30 @@ export function zrobFilm(os: Os) {
   return { kiedy, start, zakres, Scena, Napisy, klatki: Math.ceil(os.calosc * FPS) };
 }
 
-export const Naglowek: React.FC<{ eyebrow: string; tytul: string }> = ({ eyebrow, tytul }) => (
+export const Naglowek: React.FC<{ eyebrow: string; tytul: string; kolor?: string; tusz?: string }> = ({ eyebrow, tytul, kolor = K.a, tusz = K.ink }) => (
   <div style={{ position: "absolute", left: 120, top: 92 }}>
-    <div style={{ fontFamily: CZCIONKA.tekst, fontWeight: 800, fontSize: 24, letterSpacing: "0.16em", textTransform: "uppercase", color: K.a, marginBottom: 12 }}>{eyebrow}</div>
-    <div style={{ fontFamily: CZCIONKA.tekst, fontWeight: 800, fontSize: 64, letterSpacing: "-0.02em", color: K.ink, lineHeight: 1.08, maxWidth: 1300 }}>{tytul}</div>
+    <div style={{ fontFamily: CZCIONKA.tekst, fontWeight: 800, fontSize: 24, letterSpacing: "0.16em", textTransform: "uppercase", color: kolor, marginBottom: 12 }}>{eyebrow}</div>
+    <div style={{ fontFamily: CZCIONKA.tekst, fontWeight: 800, fontSize: 64, letterSpacing: "-0.02em", color: tusz, lineHeight: 1.08, maxWidth: 1300 }}>{tytul}</div>
   </div>
 );
 
 /** Plakietka disclosure nad kółkiem awatara (AI Act art. 50.4, `rules/content.md` § Oznaczanie AI) — przez cały film. */
-export const PlakietkaAI: React.FC<{ p: number }> = ({ p }) => (
+export const PlakietkaAI: React.FC<{ p: number; tlo?: string }> = ({ p, tlo = K.dark }) => (
   <div style={{ position: "absolute", right: 90, bottom: 470, width: 376, display: "flex", justifyContent: "center", opacity: p }}>
-    <div style={{ fontFamily: CZCIONKA.tekst, fontWeight: 700, fontSize: 22, letterSpacing: "0.04em", color: K.card, background: K.dark, borderRadius: 999, padding: "8px 20px", boxShadow: "0 8px 24px rgba(14,36,18,.22)" }}>Cyfrowy awatar AI</div>
+    <div style={{ fontFamily: CZCIONKA.tekst, fontWeight: 700, fontSize: 22, letterSpacing: "0.04em", color: K.card, background: tlo, borderRadius: 999, padding: "8px 20px", boxShadow: "0 8px 24px rgba(14,36,18,.22)" }}>Cyfrowy awatar AI</div>
   </div>
 );
 
 /** Awatar HeyGen w kółku w prawym dolnym rogu (kadr dopasowany do looku „Office Desk 1”). */
-export const Awatar: React.FC<{ src: string }> = ({ src }) => {
+/** `ramka` i `tlo` domyślnie w barwach CNW; film innej marki podaje swoje. */
+export const Awatar: React.FC<{ src: string; ramka?: string; tlo?: string }> = ({ src, ramka = K.a, tlo = K.dark }) => {
   const f = useCurrentFrame();
   const p = spring({ frame: f - 4, fps: FPS, config: { damping: 200 } });
   const D = 360;
   return (
     <>
-    <PlakietkaAI p={p} />
-    <div style={{ position: "absolute", right: 90, bottom: 70, width: D, height: D, borderRadius: 999, overflow: "hidden", border: `8px solid ${K.card}`, boxShadow: `0 0 0 4px ${K.a}, 0 24px 60px rgba(14,36,18,.28)`, transform: `scale(${0.8 + 0.2 * p})`, opacity: p, background: K.dark }}>
+    <PlakietkaAI p={p} tlo={tlo} />
+    <div style={{ position: "absolute", right: 90, bottom: 70, width: D, height: D, borderRadius: 999, overflow: "hidden", border: `8px solid ${K.card}`, boxShadow: `0 0 0 4px ${ramka}, 0 24px 60px rgba(14,36,18,.28)`, transform: `scale(${0.8 + 0.2 * p})`, opacity: p, background: tlo }}>
       <OffthreadVideo src={src} muted style={{ position: "absolute", height: 520, left: "50%", top: -18, transform: "translateX(-50%)" }} />
     </div>
     </>

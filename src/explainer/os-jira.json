@@ -1,0 +1,1538 @@
+{
+ "sceny": [
+  {
+   "id": "s1",
+   "start": 0.4,
+   "audio": "nagranie/s1.mp3",
+   "czas": 14.443,
+   "slowa": [
+    {
+     "tekst": "Cześć,",
+     "start": 0,
+     "koniec": 0.337
+    },
+    {
+     "tekst": "Angelika.",
+     "start": 0.36,
+     "koniec": 1.126
+    },
+    {
+     "tekst": "Witaj",
+     "start": 1.939,
+     "koniec": 2.403
+    },
+    {
+     "tekst": "w",
+     "start": 2.496,
+     "koniec": 2.543
+    },
+    {
+     "tekst": "Jirze.",
+     "start": 2.601,
+     "koniec": 3.181
+    },
+    {
+     "tekst": "To",
+     "start": 3.994,
+     "koniec": 4.168
+    },
+    {
+     "tekst": "miejsce,",
+     "start": 4.226,
+     "koniec": 4.598
+    },
+    {
+     "tekst": "w",
+     "start": 4.621,
+     "koniec": 4.656
+    },
+    {
+     "tekst": "którym",
+     "start": 4.702,
+     "koniec": 4.946
+    },
+    {
+     "tekst": "dział",
+     "start": 4.992,
+     "koniec": 5.19
+    },
+    {
+     "tekst": "marketingu",
+     "start": 5.236,
+     "koniec": 5.875
+    },
+    {
+     "tekst": "prowadzi",
+     "start": 5.921,
+     "koniec": 6.327
+    },
+    {
+     "tekst": "swoje",
+     "start": 6.362,
+     "koniec": 6.653
+    },
+    {
+     "tekst": "zadania.",
+     "start": 6.699,
+     "koniec": 7.303
+    },
+    {
+     "tekst": "Jedna",
+     "start": 8.255,
+     "koniec": 8.522
+    },
+    {
+     "tekst": "sprawa",
+     "start": 8.557,
+     "koniec": 9.033
+    },
+    {
+     "tekst": "to",
+     "start": 9.358,
+     "koniec": 9.485
+    },
+    {
+     "tekst": "jedno",
+     "start": 9.555,
+     "koniec": 9.81
+    },
+    {
+     "tekst": "zadanie,",
+     "start": 9.868,
+     "koniec": 10.321
+    },
+    {
+     "tekst": "a",
+     "start": 10.368,
+     "koniec": 10.426
+    },
+    {
+     "tekst": "cała",
+     "start": 10.495,
+     "koniec": 10.751
+    },
+    {
+     "tekst": "rozmowa",
+     "start": 10.797,
+     "koniec": 11.227
+    },
+    {
+     "tekst": "o",
+     "start": 11.308,
+     "koniec": 11.355
+    },
+    {
+     "tekst": "niej",
+     "start": 11.413,
+     "koniec": 11.54
+    },
+    {
+     "tekst": "leży",
+     "start": 11.587,
+     "koniec": 11.831
+    },
+    {
+     "tekst": "w",
+     "start": 11.877,
+     "koniec": 11.9
+    },
+    {
+     "tekst": "jednym",
+     "start": 11.97,
+     "koniec": 12.26
+    },
+    {
+     "tekst": "miejscu,",
+     "start": 12.307,
+     "koniec": 12.713
+    },
+    {
+     "tekst": "zamiast",
+     "start": 12.736,
+     "koniec": 13.061
+    },
+    {
+     "tekst": "w",
+     "start": 13.119,
+     "koniec": 13.154
+    },
+    {
+     "tekst": "dziesięciu",
+     "start": 13.189,
+     "koniec": 13.653
+    },
+    {
+     "tekst": "mailach.",
+     "start": 13.711,
+     "koniec": 14.443
+    }
+   ]
+  },
+  {
+   "id": "s2",
+   "start": 15.543,
+   "audio": "nagranie/s2.mp3",
+   "czas": 10.031,
+   "slowa": [
+    {
+     "tekst": "Najpierw",
+     "start": 0,
+     "koniec": 0.418
+    },
+    {
+     "tekst": "dostaniesz",
+     "start": 0.476,
+     "koniec": 0.906
+    },
+    {
+     "tekst": "maila",
+     "start": 0.975,
+     "koniec": 1.242
+    },
+    {
+     "tekst": "z",
+     "start": 1.3,
+     "koniec": 1.324
+    },
+    {
+     "tekst": "zaproszeniem.",
+     "start": 1.358,
+     "koniec": 2.229
+    },
+    {
+     "tekst": "Klikasz,",
+     "start": 2.74,
+     "koniec": 3.355
+    },
+    {
+     "tekst": "ustawiasz",
+     "start": 3.425,
+     "koniec": 3.924
+    },
+    {
+     "tekst": "hasło",
+     "start": 3.982,
+     "koniec": 4.505
+    },
+    {
+     "tekst": "i",
+     "start": 4.888,
+     "koniec": 5.016
+    },
+    {
+     "tekst": "od",
+     "start": 5.108,
+     "koniec": 5.213
+    },
+    {
+     "tekst": "razu",
+     "start": 5.259,
+     "koniec": 5.561
+    },
+    {
+     "tekst": "zapisz",
+     "start": 5.677,
+     "koniec": 6.095
+    },
+    {
+     "tekst": "ten",
+     "start": 6.13,
+     "koniec": 6.258
+    },
+    {
+     "tekst": "adres",
+     "start": 6.316,
+     "koniec": 6.606
+    },
+    {
+     "tekst": "w",
+     "start": 6.653,
+     "koniec": 6.676
+    },
+    {
+     "tekst": "zakładkach.",
+     "start": 6.711,
+     "koniec": 7.442
+    },
+    {
+     "tekst": "Będziesz",
+     "start": 8.139,
+     "koniec": 8.487
+    },
+    {
+     "tekst": "tu",
+     "start": 8.51,
+     "koniec": 8.591
+    },
+    {
+     "tekst": "zaglądać",
+     "start": 8.649,
+     "koniec": 9.102
+    },
+    {
+     "tekst": "codziennie.",
+     "start": 9.16,
+     "koniec": 10.031
+    }
+   ]
+  },
+  {
+   "id": "s3",
+   "start": 26.274,
+   "audio": "nagranie/s3.mp3",
+   "czas": 12.864,
+   "slowa": [
+    {
+     "tekst": "Wasz",
+     "start": 0,
+     "koniec": 0.267
+    },
+    {
+     "tekst": "zespół",
+     "start": 0.29,
+     "koniec": 0.662
+    },
+    {
+     "tekst": "pracuje",
+     "start": 0.708,
+     "koniec": 1.103
+    },
+    {
+     "tekst": "w",
+     "start": 1.126,
+     "koniec": 1.149
+    },
+    {
+     "tekst": "projekcie",
+     "start": 1.207,
+     "koniec": 1.672
+    },
+    {
+     "tekst": "Marketing.",
+     "start": 1.73,
+     "koniec": 2.403
+    },
+    {
+     "tekst": "Tak",
+     "start": 3.1,
+     "koniec": 3.402
+    },
+    {
+     "tekst": "wygląda",
+     "start": 3.495,
+     "koniec": 3.924
+    },
+    {
+     "tekst": "jego",
+     "start": 3.959,
+     "koniec": 4.145
+    },
+    {
+     "tekst": "tablica.",
+     "start": 4.18,
+     "koniec": 4.783
+    },
+    {
+     "tekst": "Każda",
+     "start": 5.48,
+     "koniec": 5.851
+    },
+    {
+     "tekst": "karta",
+     "start": 5.909,
+     "koniec": 6.235
+    },
+    {
+     "tekst": "to",
+     "start": 6.281,
+     "koniec": 6.362
+    },
+    {
+     "tekst": "jedno",
+     "start": 6.409,
+     "koniec": 6.618
+    },
+    {
+     "tekst": "zadanie,",
+     "start": 6.664,
+     "koniec": 7.082
+    },
+    {
+     "tekst": "a",
+     "start": 7.117,
+     "koniec": 7.152
+    },
+    {
+     "tekst": "kolumna",
+     "start": 7.21,
+     "koniec": 7.639
+    },
+    {
+     "tekst": "mówi,",
+     "start": 7.697,
+     "koniec": 8.139
+    },
+    {
+     "tekst": "na",
+     "start": 8.255,
+     "koniec": 8.382
+    },
+    {
+     "tekst": "jakim",
+     "start": 8.44,
+     "koniec": 8.742
+    },
+    {
+     "tekst": "jest",
+     "start": 8.789,
+     "koniec": 8.928
+    },
+    {
+     "tekst": "etapie:",
+     "start": 8.986,
+     "koniec": 9.532
+    },
+    {
+     "tekst": "do",
+     "start": 9.915,
+     "koniec": 10.043
+    },
+    {
+     "tekst": "zrobienia,",
+     "start": 10.101,
+     "koniec": 10.704
+    },
+    {
+     "tekst": "w",
+     "start": 10.751,
+     "koniec": 10.797
+    },
+    {
+     "tekst": "trakcie",
+     "start": 10.867,
+     "koniec": 11.401
+    },
+    {
+     "tekst": "albo",
+     "start": 11.494,
+     "koniec": 11.889
+    },
+    {
+     "tekst": "gotowe.",
+     "start": 12.005,
+     "koniec": 12.864
+    }
+   ]
+  },
+  {
+   "id": "s4",
+   "start": 39.838,
+   "audio": "nagranie/s4.mp3",
+   "czas": 9.845,
+   "slowa": [
+    {
+     "tekst": "Żeby",
+     "start": 0,
+     "koniec": 0.279
+    },
+    {
+     "tekst": "zobaczyć",
+     "start": 0.325,
+     "koniec": 0.72
+    },
+    {
+     "tekst": "tylko",
+     "start": 0.778,
+     "koniec": 1.045
+    },
+    {
+     "tekst": "swoje",
+     "start": 1.08,
+     "koniec": 1.358
+    },
+    {
+     "tekst": "zadania,",
+     "start": 1.405,
+     "koniec": 1.927
+    },
+    {
+     "tekst": "kliknij",
+     "start": 2.043,
+     "koniec": 2.485
+    },
+    {
+     "tekst": "swoje",
+     "start": 2.519,
+     "koniec": 2.821
+    },
+    {
+     "tekst": "zdjęcie",
+     "start": 2.856,
+     "koniec": 3.262
+    },
+    {
+     "tekst": "nad",
+     "start": 3.309,
+     "koniec": 3.425
+    },
+    {
+     "tekst": "tablicą.",
+     "start": 3.471,
+     "koniec": 4.145
+    },
+    {
+     "tekst": "Zostaje",
+     "start": 4.47,
+     "koniec": 5.027
+    },
+    {
+     "tekst": "to,",
+     "start": 5.108,
+     "koniec": 5.468
+    },
+    {
+     "tekst": "co",
+     "start": 5.526,
+     "koniec": 5.619
+    },
+    {
+     "tekst": "jest",
+     "start": 5.666,
+     "koniec": 5.782
+    },
+    {
+     "tekst": "przypisane",
+     "start": 5.817,
+     "koniec": 6.362
+    },
+    {
+     "tekst": "do",
+     "start": 6.409,
+     "koniec": 6.478
+    },
+    {
+     "tekst": "Ciebie.",
+     "start": 6.536,
+     "koniec": 7.012
+    },
+    {
+     "tekst": "Od",
+     "start": 7.454,
+     "koniec": 7.651
+    },
+    {
+     "tekst": "tego",
+     "start": 7.744,
+     "koniec": 8.15
+    },
+    {
+     "tekst": "zaczynasz",
+     "start": 8.324,
+     "koniec": 8.777
+    },
+    {
+     "tekst": "każdy",
+     "start": 8.858,
+     "koniec": 9.218
+    },
+    {
+     "tekst": "dzień.",
+     "start": 9.253,
+     "koniec": 9.845
+    }
+   ]
+  },
+  {
+   "id": "s5",
+   "start": 50.383,
+   "audio": "nagranie/s5.mp3",
+   "czas": 15.186,
+   "slowa": [
+    {
+     "tekst": "Kliknij",
+     "start": 0,
+     "koniec": 0.464
+    },
+    {
+     "tekst": "kartę,",
+     "start": 0.522,
+     "koniec": 1.184
+    },
+    {
+     "tekst": "a",
+     "start": 1.393,
+     "koniec": 1.672
+    },
+    {
+     "tekst": "otworzy",
+     "start": 1.846,
+     "koniec": 2.334
+    },
+    {
+     "tekst": "się",
+     "start": 2.368,
+     "koniec": 2.461
+    },
+    {
+     "tekst": "zadanie.",
+     "start": 2.519,
+     "koniec": 3.065
+    },
+    {
+     "tekst": "U",
+     "start": 3.576,
+     "koniec": 3.669
+    },
+    {
+     "tekst": "góry",
+     "start": 3.762,
+     "koniec": 4.18
+    },
+    {
+     "tekst": "tytuł",
+     "start": 4.331,
+     "koniec": 4.76
+    },
+    {
+     "tekst": "i",
+     "start": 4.853,
+     "koniec": 4.923
+    },
+    {
+     "tekst": "opis,",
+     "start": 5.016,
+     "koniec": 5.7
+    },
+    {
+     "tekst": "czyli",
+     "start": 5.817,
+     "koniec": 6.235
+    },
+    {
+     "tekst": "co",
+     "start": 6.385,
+     "koniec": 6.56
+    },
+    {
+     "tekst": "trzeba",
+     "start": 6.606,
+     "koniec": 6.92
+    },
+    {
+     "tekst": "zrobić.",
+     "start": 6.966,
+     "koniec": 7.651
+    },
+    {
+     "tekst": "Po",
+     "start": 8.034,
+     "koniec": 8.185
+    },
+    {
+     "tekst": "prawej,",
+     "start": 8.22,
+     "koniec": 8.766
+    },
+    {
+     "tekst": "kto",
+     "start": 8.893,
+     "koniec": 9.114
+    },
+    {
+     "tekst": "to",
+     "start": 9.172,
+     "koniec": 9.242
+    },
+    {
+     "tekst": "robi",
+     "start": 9.3,
+     "koniec": 9.671
+    },
+    {
+     "tekst": "i",
+     "start": 9.729,
+     "koniec": 9.799
+    },
+    {
+     "tekst": "kto",
+     "start": 9.857,
+     "koniec": 10.008
+    },
+    {
+     "tekst": "to",
+     "start": 10.054,
+     "koniec": 10.124
+    },
+    {
+     "tekst": "zlecił.",
+     "start": 10.182,
+     "koniec": 10.797
+    },
+    {
+     "tekst": "Niżej",
+     "start": 11.494,
+     "koniec": 11.9
+    },
+    {
+     "tekst": "pliki",
+     "start": 11.97,
+     "koniec": 12.434
+    },
+    {
+     "tekst": "i",
+     "start": 12.608,
+     "koniec": 12.701
+    },
+    {
+     "tekst": "cała",
+     "start": 12.794,
+     "koniec": 13.073
+    },
+    {
+     "tekst": "rozmowa,",
+     "start": 13.119,
+     "koniec": 13.549
+    },
+    {
+     "tekst": "od",
+     "start": 13.572,
+     "koniec": 13.665
+    },
+    {
+     "tekst": "pierwszego",
+     "start": 13.723,
+     "koniec": 14.176
+    },
+    {
+     "tekst": "komentarza.",
+     "start": 14.234,
+     "koniec": 15.186
+    }
+   ]
+  },
+  {
+   "id": "s6",
+   "start": 66.269,
+   "audio": "nagranie/s6.mp3",
+   "czas": 15.557,
+   "slowa": [
+    {
+     "tekst": "Najważniejszy",
+     "start": 0,
+     "koniec": 0.685
+    },
+    {
+     "tekst": "ruch",
+     "start": 0.731,
+     "koniec": 0.917
+    },
+    {
+     "tekst": "to",
+     "start": 0.975,
+     "koniec": 1.196
+    },
+    {
+     "tekst": "komentarz.",
+     "start": 1.347,
+     "koniec": 2.125
+    },
+    {
+     "tekst": "Wpisujesz",
+     "start": 2.218,
+     "koniec": 2.821
+    },
+    {
+     "tekst": "znak",
+     "start": 2.972,
+     "koniec": 3.251
+    },
+    {
+     "tekst": "małpy",
+     "start": 3.367,
+     "koniec": 3.808
+    },
+    {
+     "tekst": "i",
+     "start": 3.878,
+     "koniec": 3.947
+    },
+    {
+     "tekst": "imię,",
+     "start": 4.029,
+     "koniec": 4.621
+    },
+    {
+     "tekst": "wybierasz",
+     "start": 4.946,
+     "koniec": 5.492
+    },
+    {
+     "tekst": "osobę",
+     "start": 5.538,
+     "koniec": 5.851
+    },
+    {
+     "tekst": "z",
+     "start": 5.886,
+     "koniec": 5.921
+    },
+    {
+     "tekst": "listy",
+     "start": 5.991,
+     "koniec": 6.432
+    },
+    {
+     "tekst": "i",
+     "start": 6.583,
+     "koniec": 6.653
+    },
+    {
+     "tekst": "piszesz.",
+     "start": 6.711,
+     "koniec": 7.21
+    },
+    {
+     "tekst": "Ta",
+     "start": 7.721,
+     "koniec": 7.93
+    },
+    {
+     "tekst": "osoba",
+     "start": 7.976,
+     "koniec": 8.452
+    },
+    {
+     "tekst": "dostaje",
+     "start": 8.568,
+     "koniec": 9.102
+    },
+    {
+     "tekst": "powiadomienie.",
+     "start": 9.253,
+     "koniec": 10.136
+    },
+    {
+     "tekst": "Odpisuj",
+     "start": 10.414,
+     "koniec": 10.937
+    },
+    {
+     "tekst": "tutaj,",
+     "start": 10.971,
+     "koniec": 11.401
+    },
+    {
+     "tekst": "nie",
+     "start": 11.459,
+     "koniec": 11.587
+    },
+    {
+     "tekst": "mailem.",
+     "start": 11.633,
+     "koniec": 12.19
+    },
+    {
+     "tekst": "Wtedy",
+     "start": 12.632,
+     "koniec": 12.98
+    },
+    {
+     "tekst": "za",
+     "start": 13.015,
+     "koniec": 13.096
+    },
+    {
+     "tekst": "miesiąc",
+     "start": 13.154,
+     "koniec": 13.526
+    },
+    {
+     "tekst": "każdy",
+     "start": 13.595,
+     "koniec": 13.944
+    },
+    {
+     "tekst": "znajdzie,",
+     "start": 13.978,
+     "koniec": 14.338
+    },
+    {
+     "tekst": "kto",
+     "start": 14.362,
+     "koniec": 14.512
+    },
+    {
+     "tekst": "co",
+     "start": 14.559,
+     "koniec": 14.64
+    },
+    {
+     "tekst": "powiedział.",
+     "start": 14.698,
+     "koniec": 15.557
+    }
+   ]
+  },
+  {
+   "id": "s7",
+   "start": 82.526,
+   "audio": "nagranie/s7.mp3",
+   "czas": 11.006,
+   "slowa": [
+    {
+     "tekst": "Plik",
+     "start": 0,
+     "koniec": 0.29
+    },
+    {
+     "tekst": "dodajesz,",
+     "start": 0.348,
+     "koniec": 0.964
+    },
+    {
+     "tekst": "przeciągając",
+     "start": 1.045,
+     "koniec": 1.8
+    },
+    {
+     "tekst": "go",
+     "start": 1.858,
+     "koniec": 1.939
+    },
+    {
+     "tekst": "na",
+     "start": 1.997,
+     "koniec": 2.067
+    },
+    {
+     "tekst": "zadanie.",
+     "start": 2.125,
+     "koniec": 2.705
+    },
+    {
+     "tekst": "Grafika,",
+     "start": 3.216,
+     "koniec": 4.098
+    },
+    {
+     "tekst": "tekst,",
+     "start": 4.377,
+     "koniec": 4.992
+    },
+    {
+     "tekst": "PDF,",
+     "start": 5.108,
+     "koniec": 5.817
+    },
+    {
+     "tekst": "wszystko",
+     "start": 5.933,
+     "koniec": 6.339
+    },
+    {
+     "tekst": "jedno.",
+     "start": 6.385,
+     "koniec": 6.85
+    },
+    {
+     "tekst": "Plik",
+     "start": 7.291,
+     "koniec": 7.546
+    },
+    {
+     "tekst": "zostaje",
+     "start": 7.605,
+     "koniec": 7.999
+    },
+    {
+     "tekst": "przy",
+     "start": 8.022,
+     "koniec": 8.185
+    },
+    {
+     "tekst": "sprawie",
+     "start": 8.208,
+     "koniec": 8.777
+    },
+    {
+     "tekst": "i",
+     "start": 8.87,
+     "koniec": 8.963
+    },
+    {
+     "tekst": "nikt",
+     "start": 9.056,
+     "koniec": 9.346
+    },
+    {
+     "tekst": "go",
+     "start": 9.427,
+     "koniec": 9.52
+    },
+    {
+     "tekst": "nie",
+     "start": 9.567,
+     "koniec": 9.648
+    },
+    {
+     "tekst": "szuka",
+     "start": 9.671,
+     "koniec": 9.95
+    },
+    {
+     "tekst": "po",
+     "start": 9.996,
+     "koniec": 10.089
+    },
+    {
+     "tekst": "skrzynkach.",
+     "start": 10.112,
+     "koniec": 11.006
+    }
+   ]
+  },
+  {
+   "id": "s8",
+   "start": 94.232,
+   "audio": "nagranie/s8.mp3",
+   "czas": 13.514,
+   "slowa": [
+    {
+     "tekst": "Gdy",
+     "start": 0,
+     "koniec": 0.221
+    },
+    {
+     "tekst": "zaczynasz",
+     "start": 0.267,
+     "koniec": 0.662
+    },
+    {
+     "tekst": "pracę,",
+     "start": 0.72,
+     "koniec": 1.324
+    },
+    {
+     "tekst": "zmień",
+     "start": 1.567,
+     "koniec": 1.985
+    },
+    {
+     "tekst": "status",
+     "start": 2.055,
+     "koniec": 2.485
+    },
+    {
+     "tekst": "na",
+     "start": 2.554,
+     "koniec": 2.659
+    },
+    {
+     "tekst": "„W",
+     "start": 2.694,
+     "koniec": 2.786
+    },
+    {
+     "tekst": "trakcie",
+     "start": 2.868,
+     "koniec": 3.239
+    },
+    {
+     "tekst": "realizacji”.",
+     "start": 3.297,
+     "koniec": 4.18
+    },
+    {
+     "tekst": "Możesz",
+     "start": 4.876,
+     "koniec": 5.236
+    },
+    {
+     "tekst": "też",
+     "start": 5.271,
+     "koniec": 5.41
+    },
+    {
+     "tekst": "po",
+     "start": 5.468,
+     "koniec": 5.55
+    },
+    {
+     "tekst": "prostu",
+     "start": 5.596,
+     "koniec": 5.886
+    },
+    {
+     "tekst": "przeciągnąć",
+     "start": 5.933,
+     "koniec": 6.502
+    },
+    {
+     "tekst": "kartę",
+     "start": 6.571,
+     "koniec": 6.861
+    },
+    {
+     "tekst": "na",
+     "start": 6.896,
+     "koniec": 6.966
+    },
+    {
+     "tekst": "tablicy.",
+     "start": 7.012,
+     "koniec": 7.709
+    },
+    {
+     "tekst": "Skończone,",
+     "start": 8.034,
+     "koniec": 8.754
+    },
+    {
+     "tekst": "przesuwasz",
+     "start": 8.812,
+     "koniec": 9.439
+    },
+    {
+     "tekst": "do",
+     "start": 9.485,
+     "koniec": 9.543
+    },
+    {
+     "tekst": "„Gotowe”.",
+     "start": 9.578,
+     "koniec": 10.298
+    },
+    {
+     "tekst": "Dzięki",
+     "start": 11.111,
+     "koniec": 11.447
+    },
+    {
+     "tekst": "temu",
+     "start": 11.494,
+     "koniec": 11.738
+    },
+    {
+     "tekst": "nikt",
+     "start": 11.784,
+     "koniec": 11.981
+    },
+    {
+     "tekst": "nie",
+     "start": 12.016,
+     "koniec": 12.098
+    },
+    {
+     "tekst": "musi",
+     "start": 12.132,
+     "koniec": 12.353
+    },
+    {
+     "tekst": "pytać,",
+     "start": 12.411,
+     "koniec": 12.725
+    },
+    {
+     "tekst": "jak",
+     "start": 12.748,
+     "koniec": 12.841
+    },
+    {
+     "tekst": "idzie.",
+     "start": 12.91,
+     "koniec": 13.514
+    }
+   ]
+  },
+  {
+   "id": "s9",
+   "start": 108.446,
+   "audio": "nagranie/s9.mp3",
+   "czas": 14.814,
+   "slowa": [
+    {
+     "tekst": "Nowe",
+     "start": 0,
+     "koniec": 0.348
+    },
+    {
+     "tekst": "zadanie",
+     "start": 0.406,
+     "koniec": 0.801
+    },
+    {
+     "tekst": "zakładasz",
+     "start": 0.848,
+     "koniec": 1.324
+    },
+    {
+     "tekst": "przyciskiem",
+     "start": 1.358,
+     "koniec": 1.95
+    },
+    {
+     "tekst": "„Utwórz”.",
+     "start": 2.101,
+     "koniec": 3.204
+    },
+    {
+     "tekst": "Wybierasz",
+     "start": 3.587,
+     "koniec": 4.098
+    },
+    {
+     "tekst": "projekt",
+     "start": 4.156,
+     "koniec": 4.516
+    },
+    {
+     "tekst": "Marketing,",
+     "start": 4.563,
+     "koniec": 5.178
+    },
+    {
+     "tekst": "piszesz",
+     "start": 5.213,
+     "koniec": 5.584
+    },
+    {
+     "tekst": "tytuł,",
+     "start": 5.631,
+     "koniec": 6.223
+    },
+    {
+     "tekst": "który",
+     "start": 6.397,
+     "koniec": 6.676
+    },
+    {
+     "tekst": "mówi,",
+     "start": 6.722,
+     "koniec": 7.024
+    },
+    {
+     "tekst": "o",
+     "start": 7.07,
+     "koniec": 7.14
+    },
+    {
+     "tekst": "co",
+     "start": 7.198,
+     "koniec": 7.303
+    },
+    {
+     "tekst": "chodzi,",
+     "start": 7.349,
+     "koniec": 8.011
+    },
+    {
+     "tekst": "w",
+     "start": 8.29,
+     "koniec": 8.348
+    },
+    {
+     "tekst": "opisie",
+     "start": 8.406,
+     "koniec": 8.777
+    },
+    {
+     "tekst": "dodajesz",
+     "start": 8.835,
+     "koniec": 9.23
+    },
+    {
+     "tekst": "szczegóły",
+     "start": 9.265,
+     "koniec": 9.892
+    },
+    {
+     "tekst": "i",
+     "start": 9.961,
+     "koniec": 10.019
+    },
+    {
+     "tekst": "przypisujesz",
+     "start": 10.077,
+     "koniec": 10.751
+    },
+    {
+     "tekst": "osobę.",
+     "start": 10.82,
+     "koniec": 11.378
+    },
+    {
+     "tekst": "Dobry",
+     "start": 11.889,
+     "koniec": 12.249
+    },
+    {
+     "tekst": "tytuł",
+     "start": 12.283,
+     "koniec": 12.643
+    },
+    {
+     "tekst": "oszczędza",
+     "start": 13.026,
+     "koniec": 13.56
+    },
+    {
+     "tekst": "wszystkim",
+     "start": 13.595,
+     "koniec": 14.002
+    },
+    {
+     "tekst": "pytań.",
+     "start": 14.06,
+     "koniec": 14.814
+    }
+   ]
+  },
+  {
+   "id": "s10",
+   "start": 123.96,
+   "audio": "nagranie/s10.mp3",
+   "czas": 9.845,
+   "slowa": [
+    {
+     "tekst": "Wszystko,",
+     "start": 0,
+     "koniec": 0.627
+    },
+    {
+     "tekst": "co",
+     "start": 0.662,
+     "koniec": 0.766
+    },
+    {
+     "tekst": "dotyczy",
+     "start": 0.824,
+     "koniec": 1.173
+    },
+    {
+     "tekst": "Ciebie,",
+     "start": 1.219,
+     "koniec": 1.672
+    },
+    {
+     "tekst": "zobaczysz",
+     "start": 1.823,
+     "koniec": 2.252
+    },
+    {
+     "tekst": "pod",
+     "start": 2.31,
+     "koniec": 2.473
+    },
+    {
+     "tekst": "dzwonkiem",
+     "start": 2.508,
+     "koniec": 2.995
+    },
+    {
+     "tekst": "w",
+     "start": 3.077,
+     "koniec": 3.111
+    },
+    {
+     "tekst": "prawym",
+     "start": 3.181,
+     "koniec": 3.506
+    },
+    {
+     "tekst": "górnym",
+     "start": 3.576,
+     "koniec": 3.866
+    },
+    {
+     "tekst": "rogu",
+     "start": 3.924,
+     "koniec": 4.168
+    },
+    {
+     "tekst": "i",
+     "start": 4.226,
+     "koniec": 4.249
+    },
+    {
+     "tekst": "w",
+     "start": 4.284,
+     "koniec": 4.319
+    },
+    {
+     "tekst": "mailach",
+     "start": 4.4,
+     "koniec": 4.772
+    },
+    {
+     "tekst": "od",
+     "start": 5.213,
+     "koniec": 5.422
+    },
+    {
+     "tekst": "Jiry.",
+     "start": 5.503,
+     "koniec": 5.933
+    },
+    {
+     "tekst": "Zaglądaj",
+     "start": 6.374,
+     "koniec": 6.966
+    },
+    {
+     "tekst": "tu",
+     "start": 7.059,
+     "koniec": 7.187
+    },
+    {
+     "tekst": "rano.",
+     "start": 7.245,
+     "koniec": 7.488
+    },
+    {
+     "tekst": "Pięć",
+     "start": 7.512,
+     "koniec": 7.767
+    },
+    {
+     "tekst": "minut",
+     "start": 7.825,
+     "koniec": 8.104
+    },
+    {
+     "tekst": "i",
+     "start": 8.15,
+     "koniec": 8.173
+    },
+    {
+     "tekst": "wiesz,",
+     "start": 8.22,
+     "koniec": 8.475
+    },
+    {
+     "tekst": "co",
+     "start": 8.499,
+     "koniec": 8.58
+    },
+    {
+     "tekst": "dziś",
+     "start": 8.626,
+     "koniec": 8.777
+    },
+    {
+     "tekst": "na",
+     "start": 8.835,
+     "koniec": 8.905
+    },
+    {
+     "tekst": "Ciebie",
+     "start": 8.951,
+     "koniec": 9.172
+    },
+    {
+     "tekst": "czeka.",
+     "start": 9.207,
+     "koniec": 9.845
+    }
+   ]
+  },
+  {
+   "id": "s11",
+   "start": 134.505,
+   "audio": "nagranie/s11.mp3",
+   "czas": 9.892,
+   "slowa": [
+    {
+     "tekst": "To",
+     "start": 0,
+     "koniec": 0.163
+    },
+    {
+     "tekst": "całe",
+     "start": 0.209,
+     "koniec": 0.441
+    },
+    {
+     "tekst": "podstawy:",
+     "start": 0.476,
+     "koniec": 1.138
+    },
+    {
+     "tekst": "swoje",
+     "start": 1.312,
+     "koniec": 1.625
+    },
+    {
+     "tekst": "zadania,",
+     "start": 1.66,
+     "koniec": 2.357
+    },
+    {
+     "tekst": "komentarz",
+     "start": 2.566,
+     "koniec": 3.111
+    },
+    {
+     "tekst": "z",
+     "start": 3.135,
+     "koniec": 3.158
+    },
+    {
+     "tekst": "małpą,",
+     "start": 3.216,
+     "koniec": 3.901
+    },
+    {
+     "tekst": "plik,",
+     "start": 4.145,
+     "koniec": 4.609
+    },
+    {
+     "tekst": "status",
+     "start": 4.76,
+     "koniec": 5.329
+    },
+    {
+     "tekst": "i",
+     "start": 5.445,
+     "koniec": 5.526
+    },
+    {
+     "tekst": "nowe",
+     "start": 5.619,
+     "koniec": 5.851
+    },
+    {
+     "tekst": "zadanie.",
+     "start": 5.898,
+     "koniec": 6.42
+    },
+    {
+     "tekst": "Resztę",
+     "start": 7.117,
+     "koniec": 7.488
+    },
+    {
+     "tekst": "pokaże",
+     "start": 7.546,
+     "koniec": 7.906
+    },
+    {
+     "tekst": "Ci",
+     "start": 7.941,
+     "koniec": 8.034
+    },
+    {
+     "tekst": "Kasjana.",
+     "start": 8.092,
+     "koniec": 8.649
+    },
+    {
+     "tekst": "Powodzenia.",
+     "start": 8.893,
+     "koniec": 9.892
+    }
+   ]
+  }
+ ],
+ "calosc": 146.197
+}

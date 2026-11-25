@@ -13,6 +13,7 @@ import { KontaktyFilm, kontaktyKlatki } from "./explainer/Kontakty";
 import { ZadaniaFilm, zadaniaKlatki } from "./explainer/Zadania";
 import { ZapowiedzFilm, zapowiedzKlatki } from "./explainer/Zapowiedz";
 import { WynikiFilm, wynikiKlatki } from "./explainer/Wyniki";
+import { JiraFilm, jiraKlatki } from "./explainer/Jira";
 import { FilmA4, klatkiA4, type PropsA4 } from "./a4/Film";
 import { A4_FPS, A4_SZER, A4_WYS, wymiaryA4 } from "./a4/typy";
 import { kadrFormatu } from "./kadr";
@@ -54,6 +55,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition id="Zadania16x9" component={ZadaniaFilm} fps={EX_FPS} width={EX_SZER} height={EX_WYS} durationInFrames={zadaniaKlatki} defaultProps={{ zAwatarem: false }} />
     <Composition id="Wyniki16x9" component={WynikiFilm} fps={EX_FPS} width={EX_SZER} height={EX_WYS} durationInFrames={wynikiKlatki} defaultProps={{ zAwatarem: false }} />
     <Composition id="Zapowiedz16x9" component={ZapowiedzFilm} fps={EX_FPS} width={EX_SZER} height={EX_WYS} durationInFrames={zapowiedzKlatki} defaultProps={{ zAwatarem: false }} />
+    <Composition id="Jira16x9" component={JiraFilm} fps={EX_FPS} width={EX_SZER} height={EX_WYS} durationInFrames={jiraKlatki} defaultProps={{ zAwatarem: false }} />
     </>
   );
 };
