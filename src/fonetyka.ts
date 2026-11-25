@@ -23,6 +23,7 @@ const SLOWNIK: [RegExp, string][] = [
   [/\bYNAB\b/g, "Ynab"],
   [/\bGarmin\b/gi, "Garmin"],
   [/\bHeyGen\b/gi, "Hej Dżen"],
+  [/\bJir(ze|a|y|ę|ą)(?!\p{L})/gu, "Dżir$1"],
   [/\bElevenLabs\b/gi, "Ilewen Labs"],
   [/\bBrevo\b/gi, "Brewo"],
   [/\bLongevity\b/gi, "londżewiti"],
